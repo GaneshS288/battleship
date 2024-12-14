@@ -1,11 +1,9 @@
 export class Ship {
-  #length;
-  #type;
   #hitCount = 0;
 
   constructor(length, type) {
-    this.#length = length;
-    this.#type = type;
+    this.length = length;
+    this.type = type;
   }
 
   hit() {
@@ -13,6 +11,6 @@ export class Ship {
   }
 
   isSunk() {
-    return this.#hitCount === this.#length ? true : false;
+    return this.#hitCount === this.length ? true : false;
   }
 }

@@ -1,13 +1,13 @@
 import { jest, expect, test, describe } from "@jest/globals";
-import { Ship } from "../modules/ship";
-import { GameBoard } from "../modules/gameboard";
+import { Ship } from "../modules/ship.js";
+import { GameBoard } from "../modules/gameboard.js";
 
-const gameBoard = new GameBoard();
+const gameBoard = new GameBoard(8);
 const submarine = new Ship(3, "submarine");
 
-gameBoard.board[2][3] = submarine;
-gameBoard.board[3][3] = submarine;
-gameBoard.board[4][3] = submarine;
+gameBoard.board[2][3].ship = submarine;
+gameBoard.board[3][3].ship = submarine;
+gameBoard.board[4][3].ship = submarine;
 
 const spyhit = jest.spyOn(submarine, "hit");
 
