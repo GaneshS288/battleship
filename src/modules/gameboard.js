@@ -28,8 +28,8 @@ export class GameBoard {
   #areValidCoordinates(coordinates, alignment, ship) {
     //check if any of coordinates exceed gameboard length
     if (
-      coordinates[0] + ship.length >= this.size ||
-      coordinates[1] + ship.length >= this.size
+      (coordinates[0] + ship.length >= this.size && alignment === "vertical") ||
+      (coordinates[1] + ship.length >= this.size && alignment === "horizontal")
     )
       return false;
     //check if the nodes that ship will occupy already contain another ship and return false in that case
@@ -55,7 +55,17 @@ export class GameBoard {
   }
 
   placeShip(coordinates, alignment, ship) {
-    return this.#areValidCoordinates(coordinates, alignment, ship);
+    const isValidCoor = this.#areValidCoordinates(coordinates, alignment, ship);
+
+    if (isValidCoor && alignment === "vertical") {
+      for (let i = 0; i < ship.length; i++) {
+        this.board[coordinates[0] + i][coordinates[1]]["ship"] = ship;
+      }
+    } else if (isValidCoor && alignment === "horizontal") {
+      for (let i = 0; i < ship.length; i++) {
+        this.board[coordinates[0]][coordinates[1] + i]["ship"] = ship;
+      }
+    } else if (!isValidCoor) return "invalid coordinates";
   }
 
   recieveAttack(x, y) {
