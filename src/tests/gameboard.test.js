@@ -2,7 +2,7 @@ import { jest, expect, test, describe } from "@jest/globals";
 import { Ship } from "../modules/ship.js";
 import { GameBoard } from "../modules/gameboard.js";
 
-const gameBoard = new GameBoard(8);
+const gameBoard = new GameBoard();
 const submarine = new Ship(3, "submarine");
 const spyhit = jest.spyOn(submarine, "hit");
 
@@ -26,6 +26,8 @@ describe("gameboard", () => {
   test('ship not placed with bad coordinates', () => {
     expect(gameBoard.placeShip([0,1], 'vertical', submarine)).toBe('invalid coordinates');
     expect(gameBoard.placeShip([7,7], 'vertical', submarine)).toBe('invalid coordinates');
+    expect(gameBoard.placeShip([3,9], 'horizontal', submarine)).toBe('invalid coordinates');
+    expect(gameBoard.placeShip([4,1], 'vertical', submarine)).toBe('invalid coordinates');
   })
 
   test("attack recived", () => {

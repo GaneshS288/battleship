@@ -6,7 +6,7 @@ class BoardNode {
 }
 
 export class GameBoard {
-  constructor(size) {
+  constructor(size = 10) {
     this.size = size;
     this.board = this.#createGameboard(size);
   }
@@ -30,8 +30,10 @@ export class GameBoard {
     if (
       (coordinates[0] + ship.length >= this.size && alignment === "vertical") ||
       (coordinates[1] + ship.length >= this.size && alignment === "horizontal")
-    )
+    ) {
       return false;
+    }
+
     //check if the nodes that ship will occupy already contain another ship and return false in that case
     else if (alignment === "vertical") {
       for (let i = 0; i < ship.length; i++) {
