@@ -5,7 +5,7 @@ import { GameBoard } from "../modules/gameboard.js";
 const gameBoard = new GameBoard();
 const submarine = new Ship(3, "submarine");
 const cruiser = new Ship(3, "curiser", "vertical");
-const spyhit = jest.spyOn(submarine, "hit");
+const spySubmarineHit = jest.spyOn(submarine, "hit");
 
 describe("gameboard", () => {
   test("ship placed vertically", () => {
@@ -40,8 +40,18 @@ describe("gameboard", () => {
     expect(gameBoard.placeShip([4, 1], cruiser)).toBe("invalid coordinates");
   });
 
-  test("ship removed", () => {
+  test("ship removed vertically", () => {
     expect(gameBoard.removeShip([1, 1])).toBe(cruiser);
+    expect(gameBoard.board[0][1].ship).toBe(null);
+    expect(gameBoard.board[1][1].ship).toBe(null);
+    expect(gameBoard.board[2][1].ship).toBe(null);
+  });
+
+  test("ship removed horizontally", () => {
+    expect(gameBoard.removeShip([4, 2])).toBe(submarine);
+    expect(gameBoard.board[4][0].ship).toBe(null);
+    expect(gameBoard.board[4][1].ship).toBe(null);
+    expect(gameBoard.board[4][2].ship).toBe(null);
   });
 
   test("tryin to remove from empty coordinates returns null", () => {
@@ -49,12 +59,14 @@ describe("gameboard", () => {
   });
 
   test("attack recieved", () => {
+    gameBoard.placeShip([0, 3], submarine);
+
     gameBoard.recieveAttack(0, 3);
     gameBoard.recieveAttack(2, 1);
     gameBoard.recieveAttack(3, 3);
     gameBoard.recieveAttack(4, 2);
     gameBoard.recieveAttack(5, 7);
 
-    expect(spyhit.mock.calls.length).toBe(1);
+    expect(spySubmarineHit.mock.calls.length).toBe(1);
   });
 });

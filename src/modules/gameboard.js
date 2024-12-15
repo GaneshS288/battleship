@@ -28,8 +28,10 @@ export class GameBoard {
   #areValidCoordinates(coordinates, ship) {
     //check if any of coordinates exceed gameboard length
     if (
-      (coordinates[0] + ship.length >= this.size && ship.alignment === "vertical") ||
-      (coordinates[1] + ship.length >= this.size && ship.alignment === "horizontal")
+      (coordinates[0] + ship.length >= this.size &&
+        ship.alignment === "vertical") ||
+      (coordinates[1] + ship.length >= this.size &&
+        ship.alignment === "horizontal")
     ) {
       return false;
     }
@@ -56,20 +58,56 @@ export class GameBoard {
     return true;
   }
 
+  #getShipCoordinates(ship) {
+    const coordinates = [];
+
+    if (ship.alignment === "vertical") {
+      for (let i = 0; i < ship.length; i++) {
+        coordinates.push([
+          ship.startCoordinates[0] + i,
+          ship.startCoordinates[1],
+        ]);
+      }
+    } else if (ship.alignment === "horizontal") {
+      for (let i = 0; i < ship.length; i++) {
+        coordinates.push([
+          ship.startCoordinates[0],
+          ship.startCoordinates[1] + i,
+        ]);
+      }
+    }
+
+    return coordinates;
+  }
+
   placeShip(coordinates, ship) {
     const isValidCoor = this.#areValidCoordinates(coordinates, ship);
 
     if (isValidCoor && ship.alignment === "vertical") {
       ship.startCoordinates = coordinates;
+
       for (let i = 0; i < ship.length; i++) {
         this.board[coordinates[0] + i][coordinates[1]]["ship"] = ship;
       }
     } else if (isValidCoor && ship.alignment === "horizontal") {
       ship.startCoordinates = coordinates;
+
       for (let i = 0; i < ship.length; i++) {
         this.board[coordinates[0]][coordinates[1] + i]["ship"] = ship;
       }
     } else if (!isValidCoor) return "invalid coordinates";
+  }
+
+  removeShip(coordinates) {
+    let ship = this.board[coordinates[0]][coordinates[1]].ship;
+
+    if (ship === null) return null;
+
+    this.#getShipCoordinates(ship).forEach((coord) => {
+      this.board[coord[0]][coord[1]].ship = null;
+    });
+
+    return ship;
   }
 
   recieveAttack(x, y) {
@@ -80,4 +118,3 @@ export class GameBoard {
     }
   }
 }
-
