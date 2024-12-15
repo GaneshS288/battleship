@@ -5,6 +5,7 @@ export class Ship {
     this.length = length;
     this.type = type;
     this.alignment = alignment;
+    this.startCoordinates = null;
   }
 
   hit() {

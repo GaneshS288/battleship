@@ -60,10 +60,12 @@ export class GameBoard {
     const isValidCoor = this.#areValidCoordinates(coordinates, ship);
 
     if (isValidCoor && ship.alignment === "vertical") {
+      ship.startCoordinates = coordinates;
       for (let i = 0; i < ship.length; i++) {
         this.board[coordinates[0] + i][coordinates[1]]["ship"] = ship;
       }
     } else if (isValidCoor && ship.alignment === "horizontal") {
+      ship.startCoordinates = coordinates;
       for (let i = 0; i < ship.length; i++) {
         this.board[coordinates[0]][coordinates[1] + i]["ship"] = ship;
       }
