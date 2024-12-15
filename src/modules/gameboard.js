@@ -25,17 +25,17 @@ export class GameBoard {
     return board;
   }
 
-  #areValidCoordinates(coordinates, alignment, ship) {
+  #areValidCoordinates(coordinates, ship) {
     //check if any of coordinates exceed gameboard length
     if (
-      (coordinates[0] + ship.length >= this.size && alignment === "vertical") ||
-      (coordinates[1] + ship.length >= this.size && alignment === "horizontal")
+      (coordinates[0] + ship.length >= this.size && ship.alignment === "vertical") ||
+      (coordinates[1] + ship.length >= this.size && ship.alignment === "horizontal")
     ) {
       return false;
     }
 
-    //check if the nodes that ship will occupy already contain another ship and return false in that case
-    else if (alignment === "vertical") {
+    //check if the nodes that ship will occupy already contain another ship and return false if they do
+    else if (ship.alignment === "vertical") {
       for (let i = 0; i < ship.length; i++) {
         let node = this.board[coordinates[0] + i][coordinates[1]];
 
@@ -43,7 +43,7 @@ export class GameBoard {
           return false;
         }
       }
-    } else if (alignment === "horizontal") {
+    } else if (ship.alignment === "horizontal") {
       for (let i = 0; i < ship.length; i++) {
         let node = this.board[coordinates[0]][coordinates[1] + i];
 
@@ -56,14 +56,14 @@ export class GameBoard {
     return true;
   }
 
-  placeShip(coordinates, alignment, ship) {
-    const isValidCoor = this.#areValidCoordinates(coordinates, alignment, ship);
+  placeShip(coordinates, ship) {
+    const isValidCoor = this.#areValidCoordinates(coordinates, ship);
 
-    if (isValidCoor && alignment === "vertical") {
+    if (isValidCoor && ship.alignment === "vertical") {
       for (let i = 0; i < ship.length; i++) {
         this.board[coordinates[0] + i][coordinates[1]]["ship"] = ship;
       }
-    } else if (isValidCoor && alignment === "horizontal") {
+    } else if (isValidCoor && ship.alignment === "horizontal") {
       for (let i = 0; i < ship.length; i++) {
         this.board[coordinates[0]][coordinates[1] + i]["ship"] = ship;
       }
@@ -78,3 +78,4 @@ export class GameBoard {
     }
   }
 }
+

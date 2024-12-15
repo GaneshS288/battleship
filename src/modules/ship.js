@@ -1,9 +1,10 @@
 export class Ship {
   #hitCount = 0;
 
-  constructor(length, type) {
+  constructor(length, type, alignment = 'horizontal') {
     this.length = length;
     this.type = type;
+    this.alignment = alignment;
   }
 
   hit() {
