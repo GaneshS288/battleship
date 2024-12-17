@@ -26,11 +26,17 @@ export class GameBoard {
   }
 
   #areValidCoordinates(coordinates, ship) {
-    //check if any of coordinates exceed gameboard length
-    if (
-      (coordinates[0] + ship.length >= this.size &&
+
+    const x = coordinates[0];
+    const y = coordinates[1];
+    //check if any of coordinates exceed gameboard size
+    if(x < 0 || y < 0 || x > this.size || y > this.size) return false;
+
+    //check if coordinates + ship length exceed gameboard size
+    else if (
+      (x + ship.length >= this.size &&
         ship.alignment === "vertical") ||
-      (coordinates[1] + ship.length >= this.size &&
+      (y + ship.length >= this.size &&
         ship.alignment === "horizontal")
     ) {
       return false;
@@ -39,15 +45,15 @@ export class GameBoard {
     //check if the nodes that ship will occupy already contain another ship and return false if they do
     else if (ship.alignment === "vertical") {
       for (let i = 0; i < ship.length; i++) {
-        let node = this.board[coordinates[0] + i][coordinates[1]];
-
+        let node = this.board[x + i][y];
+ 
         if (node.ship) {
           return false;
         }
       }
     } else if (ship.alignment === "horizontal") {
       for (let i = 0; i < ship.length; i++) {
-        let node = this.board[coordinates[0]][coordinates[1] + i];
+        let node = this.board[x][y + i];
 
         if (node.ship) {
           return false;

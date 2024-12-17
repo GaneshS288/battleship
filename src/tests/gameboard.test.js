@@ -52,10 +52,9 @@ describe("gameboard", () => {
     gameBoard.placeShip([4, 0], submarine);
 
     const cruiser = new Ship(3, "curiser", "vertical");
-    gameBoard.placeShip([0, 1], cruiser);
 
-    expect(gameBoard.placeShip([0, 1], cruiser)).toBe("invalid coordinates");
-    expect(gameBoard.placeShip([7, 7], cruiser)).toBe("invalid coordinates");
+    expect(gameBoard.placeShip([-1, 1], cruiser)).toBe("invalid coordinates");
+    expect(gameBoard.placeShip([11, 7], cruiser)).toBe("invalid coordinates");
     expect(gameBoard.placeShip([3, 9], submarine)).toBe("invalid coordinates");
     expect(gameBoard.placeShip([4, 1], cruiser)).toBe("invalid coordinates");
   });
