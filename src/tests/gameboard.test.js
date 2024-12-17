@@ -1,14 +1,17 @@
-import { jest, expect, test, describe } from "@jest/globals";
+import { jest, expect, test, describe, xdescribe } from "@jest/globals";
 import { Ship } from "../modules/ship.js";
 import { GameBoard } from "../modules/gameboard.js";
 
-const gameBoard = new GameBoard();
-const submarine = new Ship(3, "submarine");
-const cruiser = new Ship(3, "curiser", "vertical");
-const spySubmarineHit = jest.spyOn(submarine, "hit");
+//const gameBoard = new GameBoard();
+//const submarine = new Ship(3, "submarine");
+//const cruiser = new Ship(3, "curiser", "vertical");
+//const spySubmarineHit = jest.spyOn(submarine, "hit");
 
 describe("gameboard", () => {
   test("ship placed vertically", () => {
+    const gameBoard = new GameBoard();
+    const cruiser = new Ship(3, "curiser", "vertical");
+
     gameBoard.placeShip([0, 1], cruiser);
 
     expect(gameBoard.board[0][1].ship).toBe(cruiser);
@@ -17,6 +20,9 @@ describe("gameboard", () => {
   });
 
   test("ship placed horizontally", () => {
+    const gameBoard = new GameBoard();
+    const submarine = new Ship(3, "submarine", 'horizontal');
+
     gameBoard.placeShip([4, 0], submarine);
 
     expect(gameBoard.board[4][0].ship).toBe(submarine);
@@ -25,6 +31,13 @@ describe("gameboard", () => {
   });
 
   test("starting coordinates set on placed ships", () => {
+    const gameBoard = new GameBoard();
+    const cruiser = new Ship(3, "curiser", "vertical");
+    gameBoard.placeShip([0, 1], cruiser);
+
+    const submarine = new Ship(3, "submarine", "horizontal");
+    gameBoard.placeShip([4, 0], submarine);
+
     expect(
       `${cruiser.startCoordinates[0]}, ${cruiser.startCoordinates[1]}`
     ).toBe("0, 1");
@@ -34,6 +47,13 @@ describe("gameboard", () => {
   });
 
   test("ship not placed with bad coordinates", () => {
+    const gameBoard = new GameBoard();
+    const submarine = new Ship(3, "submarine", "horizontal");
+    gameBoard.placeShip([4, 0], submarine);
+
+    const cruiser = new Ship(3, "curiser", "vertical");
+    gameBoard.placeShip([0, 1], cruiser);
+
     expect(gameBoard.placeShip([0, 1], cruiser)).toBe("invalid coordinates");
     expect(gameBoard.placeShip([7, 7], cruiser)).toBe("invalid coordinates");
     expect(gameBoard.placeShip([3, 9], submarine)).toBe("invalid coordinates");
@@ -41,6 +61,10 @@ describe("gameboard", () => {
   });
 
   test("ship removed vertically", () => {
+    const gameBoard = new GameBoard();
+    const cruiser = new Ship(3, "curiser", "vertical");
+    gameBoard.placeShip([0, 1], cruiser);
+
     expect(gameBoard.removeShip([1, 1])).toBe(cruiser);
     expect(gameBoard.board[0][1].ship).toBe(null);
     expect(gameBoard.board[1][1].ship).toBe(null);
@@ -48,6 +72,10 @@ describe("gameboard", () => {
   });
 
   test("ship removed horizontally", () => {
+    const gameBoard = new GameBoard();
+    const submarine = new Ship(3, "submarine", 'horizontal');
+    gameBoard.placeShip([4, 0], submarine);
+
     expect(gameBoard.removeShip([4, 2])).toBe(submarine);
     expect(gameBoard.board[4][0].ship).toBe(null);
     expect(gameBoard.board[4][1].ship).toBe(null);
@@ -55,18 +83,65 @@ describe("gameboard", () => {
   });
 
   test("tryin to remove from empty coordinates returns null", () => {
+    const gameBoard = new GameBoard();
+
     expect(gameBoard.removeShip([2, 3])).toBe(null);
   });
 
+  test("move ship", () => {
+    const gameBoard = new GameBoard();
+    const gunboat = new Ship(2, "gunboat", "vertical");
+    gameBoard.placeShip([2, 2], gunboat);
+
+    expect(gameBoard.moveShip([3, 2], gunboat)).toBe(gunboat);
+    expect(gameBoard.board[(3, 2)]).toBe(gunboat);
+    expect(gameBoard.board[(4, 2)]).toBe(gunboat);
+  });
+
+  test("ship can be moved to coordinates that overlap with its old coordinates", () => {
+    const gameBoard = new GameBoard();
+    const gunboat = new Ship(2, "gunboat", "horizontal");
+    gameBoard.placeShip([2, 2], gunboat);
+
+    expect(gameBoard.moveShip([2, 3], gunboat)).toBe(gunboat);
+    expect(gameBoard.board[(2, 3)]).toBe(gunboat);
+    expect(gameBoard.board[(2, 4)]).toBe(gunboat);
+  });
+
+  test("move and change ship alignment", () => {
+    const gameBoard = new GameBoard();
+    const gunboat = new Ship(2, "gunboat", "horizontal");
+    gameBoard.placeShip([5, 5], gunboat);
+
+    expect(gameBoard.moveShip([5,5], gunboat, 'vertical')).toBe(gunboat);;
+    expect(gunboat.alignment).toBe('vertical');
+    expect(gameBoard.board[5,5]).toBe(gunboat);
+    expect(gameBoard.board[6,5]).toBe(gunboat);
+  });
+
+  test('returns null if moving to invalid coordinates', () => {
+    const gameBoard = new GameBoard();
+    const brig = new Ship(3, "brig", "vertical");
+    gameBoard.placeShip([2,3], brig);
+    const gunboat = new Ship(2, "gunboat", "horizontal");
+    gameBoard.placeShip([5, 5], gunboat);
+
+    expect(gameBoard.moveShip([-1, 0], gunboat)).toBe(null);
+    expect(gameBoard.moveShip([2,3], gunboat)).toBe(null);
+  })
+
   test("attack recieved", () => {
+    const gameBoard = new GameBoard();
+    const submarine = new Ship(3, "submarine", "horizontal");
+    const spySubmarineHit = jest.spyOn(submarine, "hit");
     gameBoard.placeShip([0, 3], submarine);
 
     gameBoard.recieveAttack(0, 3);
-    gameBoard.recieveAttack(2, 1);
+    gameBoard.recieveAttack(0, 5);
     gameBoard.recieveAttack(3, 3);
     gameBoard.recieveAttack(4, 2);
     gameBoard.recieveAttack(5, 7);
 
-    expect(spySubmarineHit.mock.calls.length).toBe(1);
+    expect(spySubmarineHit.mock.calls.length).toBe(2);
   });
 });
