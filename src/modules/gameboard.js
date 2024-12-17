@@ -110,6 +110,16 @@ export class GameBoard {
     return ship;
   }
 
+  moveShip(coordinates, ship, alignment) {
+    if(this.#areValidCoordinates(coordinates, ship)) {
+      this.removeShip(ship.startCoordinates);
+      this.placeShip(coordinates, ship);
+      return ship;
+    }
+
+    else return null;
+  }
+
   recieveAttack(x, y) {
     const node = this.board[x][y];
     if (node.ship !== null && !node.targeted) {

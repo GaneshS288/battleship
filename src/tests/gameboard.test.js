@@ -93,9 +93,11 @@ describe("gameboard", () => {
     const gunboat = new Ship(2, "gunboat", "vertical");
     gameBoard.placeShip([2, 2], gunboat);
 
-    expect(gameBoard.moveShip([3, 2], gunboat)).toBe(gunboat);
-    expect(gameBoard.board[(3, 2)]).toBe(gunboat);
-    expect(gameBoard.board[(4, 2)]).toBe(gunboat);
+    expect(gameBoard.moveShip([4, 2], gunboat)).toBe(gunboat);
+    expect(gameBoard.board[4][2].ship).toBe(gunboat);
+    expect(gameBoard.board[5][2].ship).toBe(gunboat);
+    expect(gameBoard.board[2][2].ship).toBe(null);
+    expect(gameBoard.board[3][2].ship).toBe(null);
   });
 
   test("ship can be moved to coordinates that overlap with its old coordinates", () => {
@@ -104,8 +106,8 @@ describe("gameboard", () => {
     gameBoard.placeShip([2, 2], gunboat);
 
     expect(gameBoard.moveShip([2, 3], gunboat)).toBe(gunboat);
-    expect(gameBoard.board[(2, 3)]).toBe(gunboat);
-    expect(gameBoard.board[(2, 4)]).toBe(gunboat);
+    expect(gameBoard.board[2][3]).toBe(gunboat);
+    expect(gameBoard.board[2][4]).toBe(gunboat);
   });
 
   test("move and change ship alignment", () => {
@@ -115,8 +117,8 @@ describe("gameboard", () => {
 
     expect(gameBoard.moveShip([5,5], gunboat, 'vertical')).toBe(gunboat);;
     expect(gunboat.alignment).toBe('vertical');
-    expect(gameBoard.board[5,5]).toBe(gunboat);
-    expect(gameBoard.board[6,5]).toBe(gunboat);
+    expect(gameBoard.board[5][5]).toBe(gunboat);
+    expect(gameBoard.board[6][5]).toBe(gunboat);
   });
 
   test('returns null if moving to invalid coordinates', () => {
