@@ -26,27 +26,25 @@ export class GameBoard {
   }
 
   #areValidCoordinates(coordinates, ship) {
-
     const x = coordinates[0];
     const y = coordinates[1];
     //check if any of coordinates exceed gameboard size
-    if(x < 0 || y < 0 || x > this.size || y > this.size) return false;
-
+    if (x < 0 || y < 0 || x >= this.size || y >= this.size) return false;
     //check if coordinates + ship length exceed gameboard size
     else if (
-      (x + ship.length >= this.size &&
-        ship.alignment === "vertical") ||
-      (y + ship.length >= this.size &&
-        ship.alignment === "horizontal")
+      (x + ship.length >= this.size && ship.alignment === "vertical") ||
+      (y + ship.length >= this.size && ship.alignment === "horizontal")
     ) {
       return false;
     }
 
-    //check if the nodes that ship will occupy already contain another ship and return false if they do
+    //check if the nodes that ship will occupy already contain a different ship and return false if they do
     else if (ship.alignment === "vertical") {
       for (let i = 0; i < ship.length; i++) {
         let node = this.board[x + i][y];
- 
+
+        if (node.ship === ship) continue;
+
         if (node.ship) {
           return false;
         }
@@ -54,6 +52,8 @@ export class GameBoard {
     } else if (ship.alignment === "horizontal") {
       for (let i = 0; i < ship.length; i++) {
         let node = this.board[x][y + i];
+
+        if (node.ship === ship) continue;
 
         if (node.ship) {
           return false;
@@ -117,13 +117,26 @@ export class GameBoard {
   }
 
   moveShip(coordinates, ship, alignment) {
-    if(this.#areValidCoordinates(coordinates, ship)) {
+    if (alignment !== undefined) {
+      const originalAlignment = ship.alignment;
+      ship.alignment = alignment;
+
+      if (this.#areValidCoordinates(coordinates, ship)) {
+        this.removeShip(ship.startCoordinates);
+        this.placeShip(coordinates, ship);
+
+        return ship;
+      } else {
+        ship.alignment = originalAlignment;
+
+        return null;
+      }
+    } else if (this.#areValidCoordinates(coordinates, ship)) {
       this.removeShip(ship.startCoordinates);
       this.placeShip(coordinates, ship);
-      return ship;
-    }
 
-    else return null;
+      return ship;
+    } else return null;
   }
 
   recieveAttack(x, y) {

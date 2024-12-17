@@ -21,7 +21,7 @@ describe("gameboard", () => {
 
   test("ship placed horizontally", () => {
     const gameBoard = new GameBoard();
-    const submarine = new Ship(3, "submarine", 'horizontal');
+    const submarine = new Ship(3, "submarine", "horizontal");
 
     gameBoard.placeShip([4, 0], submarine);
 
@@ -72,7 +72,7 @@ describe("gameboard", () => {
 
   test("ship removed horizontally", () => {
     const gameBoard = new GameBoard();
-    const submarine = new Ship(3, "submarine", 'horizontal');
+    const submarine = new Ship(3, "submarine", "horizontal");
     gameBoard.placeShip([4, 0], submarine);
 
     expect(gameBoard.removeShip([4, 2])).toBe(submarine);
@@ -105,8 +105,9 @@ describe("gameboard", () => {
     gameBoard.placeShip([2, 2], gunboat);
 
     expect(gameBoard.moveShip([2, 3], gunboat)).toBe(gunboat);
-    expect(gameBoard.board[2][3]).toBe(gunboat);
-    expect(gameBoard.board[2][4]).toBe(gunboat);
+    expect(gameBoard.board[2][3].ship).toBe(gunboat);
+    expect(gameBoard.board[2][4].ship).toBe(gunboat);
+    expect(gameBoard.board[2][2].ship).toBe(null);
   });
 
   test("move and change ship alignment", () => {
@@ -114,22 +115,22 @@ describe("gameboard", () => {
     const gunboat = new Ship(2, "gunboat", "horizontal");
     gameBoard.placeShip([5, 5], gunboat);
 
-    expect(gameBoard.moveShip([5,5], gunboat, 'vertical')).toBe(gunboat);;
-    expect(gunboat.alignment).toBe('vertical');
-    expect(gameBoard.board[5][5]).toBe(gunboat);
-    expect(gameBoard.board[6][5]).toBe(gunboat);
+    expect(gameBoard.moveShip([5, 5], gunboat, "vertical")).toBe(gunboat);
+    expect(gunboat.alignment).toBe("vertical");
+    expect(gameBoard.board[5][5].ship).toBe(gunboat);
+    expect(gameBoard.board[6][5].ship).toBe(gunboat);
   });
 
-  test('returns null if moving to invalid coordinates', () => {
+  test("returns null if moving to invalid coordinates", () => {
     const gameBoard = new GameBoard();
     const brig = new Ship(3, "brig", "vertical");
-    gameBoard.placeShip([2,3], brig);
+    gameBoard.placeShip([2, 3], brig);
     const gunboat = new Ship(2, "gunboat", "horizontal");
     gameBoard.placeShip([5, 5], gunboat);
 
     expect(gameBoard.moveShip([-1, 0], gunboat)).toBe(null);
-    expect(gameBoard.moveShip([2,3], gunboat)).toBe(null);
-  })
+    expect(gameBoard.moveShip([2, 3], gunboat)).toBe(null);
+  });
 
   test("attack recieved", () => {
     const gameBoard = new GameBoard();
