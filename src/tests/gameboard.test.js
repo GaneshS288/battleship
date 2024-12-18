@@ -138,12 +138,23 @@ describe("gameboard", () => {
     const spySubmarineHit = jest.spyOn(submarine, "hit");
     gameBoard.placeShip([0, 3], submarine);
 
-    gameBoard.recieveAttack(0, 3);
-    gameBoard.recieveAttack(0, 5);
-    gameBoard.recieveAttack(3, 3);
-    gameBoard.recieveAttack(4, 2);
-    gameBoard.recieveAttack(5, 7);
+    expect(gameBoard.recieveAttack(0, 3)).toBe(true);
+    expect(gameBoard.recieveAttack(0, 5)).toBe(true);
+    expect(gameBoard.recieveAttack(3, 3)).toBe(true);
+    expect(gameBoard.recieveAttack(4, 2)).toBe(true);
 
     expect(spySubmarineHit.mock.calls.length).toBe(2);
+  });
+
+  test("attack recieved returns false if alredy targeted cell hit", () => {
+    const gameBoard = new GameBoard();
+    const submarine = new Ship(3, "submarine", "horizontal");
+    gameBoard.placeShip([0, 3], submarine);
+
+    gameBoard.recieveAttack(0, 3);
+    gameBoard.recieveAttack(2, 3);
+
+    expect(gameBoard.recieveAttack(0, 3)).toBe(false);
+    expect(gameBoard.recieveAttack(2, 3)).toBe(false);
   });
 });

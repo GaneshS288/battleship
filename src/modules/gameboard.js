@@ -141,9 +141,18 @@ export class GameBoard {
 
   recieveAttack(x, y) {
     const node = this.board[x][y];
-    if (node.ship !== null && !node.targeted) {
+
+    if(node.targeted === true) return false;
+
+    else if (node.ship !== null) {
       node.ship.hit();
       node.targeted = true;
+      return true;
+    }
+
+    else if (node.ship === null) {
+      node.targeted = true;
+      return true;
     }
   }
 }
