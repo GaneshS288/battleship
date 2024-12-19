@@ -26,4 +26,17 @@ describe("Human player", () => {
     expect(humanPlayer.attack([0, 3], gameBoard)).toBe("invalid target");
     expect(humanPlayer.attack([5, 5], gameBoard)).toBe("invalid target");
   });
+
+  test("Create ships", () => {
+    const humanPlayer = new HumanPlayer('Ganesh');
+    humanPlayer.createShips();
+    const idleShips = humanPlayer.idleShips.map((ship) => ship.type);
+
+    expect(idleShips[0]).toBe('gunboat one');
+    expect(idleShips[1]).toBe('gunboat two');
+    expect(idleShips[2]).toBe('schooner one');
+    expect(idleShips[3]).toBe('schooner two');
+    expect(idleShips[4]).toBe('brig');
+    expect(idleShips[5]).toBe('men of war');
+  })
 });
