@@ -11,6 +11,7 @@ export class HumanPlayer {
     this.createShips = createShips;
     this.placeShip = humanPlacesShip;
     this.moveShip = humanMovesShip;
+    this.removeShip = humanRemovesShip;
   }
 }
 
@@ -60,4 +61,17 @@ function humanMovesShip(coordinates, gameBoard, ship) {
 
   if (isSuccessful === ship) return true;
   else if (isSuccessful === null) return false;
+}
+
+function humanRemovesShip(coordinates, gameBoard) {
+  const ship = gameBoard.removeShip(coordinates);
+
+  if (ship) {
+    const shipIndex = this.deployedShips.findIndex(
+      (deployedShip) => deployedShip === ship
+    );
+    this.deployedShips.splice(shipIndex, 1);
+    this.idleShips.push(ship);
+    return true;
+  } else return false;
 }

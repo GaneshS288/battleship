@@ -46,8 +46,12 @@ describe("Human player", () => {
     const ship = humanPlayer.idleShips[0];
     const secondShip = humanPlayer.idleShips[1];
 
-    expect(humanPlayer.placeShip([0, 3], humanPlayer.gameBoard, ship)).toBe(true);
-    expect(humanPlayer.placeShip([0, 3], humanPlayer.gameBoard, secondShip)).toBe(false);
+    expect(humanPlayer.placeShip([0, 3], humanPlayer.gameBoard, ship)).toBe(
+      true
+    );
+    expect(
+      humanPlayer.placeShip([0, 3], humanPlayer.gameBoard, secondShip)
+    ).toBe(false);
     expect(humanPlayer.idleShips.includes(ship)).toBe(false);
     expect(humanPlayer.deployedShips.includes(ship)).toBe(true);
   });
@@ -58,7 +62,23 @@ describe("Human player", () => {
     const ship = humanPlayer.idleShips[0];
     humanPlayer.placeShip([0, 3], humanPlayer.gameBoard, ship);
 
-    expect(humanPlayer.moveShip([0, 4], humanPlayer.gameBoard, ship)).toBe(true);
-    expect(humanPlayer.moveShip([0, 10], humanPlayer.gameBoard, ship)).toBe(false);
-  })
+    expect(humanPlayer.moveShip([0, 4], humanPlayer.gameBoard, ship)).toBe(
+      true
+    );
+    expect(humanPlayer.moveShip([0, 10], humanPlayer.gameBoard, ship)).toBe(
+      false
+    );
+  });
+
+  test("remove deployed ship", () => {
+    const humanPlayer = new HumanPlayer("Ganesh");
+    humanPlayer.createShips();
+    const ship = humanPlayer.idleShips[0];
+    humanPlayer.placeShip([0, 3], humanPlayer.gameBoard, ship);
+
+    expect(humanPlayer.removeShip([0, 3], humanPlayer.gameBoard)).toBe(true);
+    expect(humanPlayer.removeShip([0, 1], humanPlayer.gameBoard)).toBe(false);
+    expect(humanPlayer.idleShips.includes(ship)).toBe(true);
+    expect(humanPlayer.deployedShips.includes(ship)).toBe(false);
+  });
 });
