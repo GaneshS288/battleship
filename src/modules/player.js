@@ -12,6 +12,7 @@ export class HumanPlayer {
     this.placeShip = humanPlacesShip;
     this.moveShip = humanMovesShip;
     this.removeShip = humanRemovesShip;
+    this.isDefeated = isDefeated;
   }
 }
 
@@ -31,6 +32,17 @@ function createShips() {
     brig,
     menOfWar,
   ];
+}
+
+function isDefeated() {
+  let isDefeated = true;
+
+  this.deployedShips.forEach((ship) => {
+    if(!ship.isSunk())
+      isDefeated = false; 
+  })
+
+  return isDefeated;
 }
 
 function humanAttacks(coordinates, gameBoard) {

@@ -81,4 +81,21 @@ describe("Human player", () => {
     expect(humanPlayer.idleShips.includes(ship)).toBe(true);
     expect(humanPlayer.deployedShips.includes(ship)).toBe(false);
   });
+
+  test("check defeat", () => {
+    const humanPlayer = new HumanPlayer("Ganesh");
+    humanPlayer.deployedShips.push(new Ship(1, "gunboat", "horizontal"));
+    humanPlayer.deployedShips.push(new Ship(1, "gunboat", "horizontal"));
+    humanPlayer.deployedShips[0].hit();
+    humanPlayer.deployedShips[1].hit();
+
+    expect(humanPlayer.isDefeated()).toBe(true);
+  });
+
+  test("returns false when not defeated", () => {
+    const humanPlayer = new HumanPlayer("Ganesh");
+    humanPlayer.deployedShips.push(new Ship(3, "brig", "horizontal"));
+
+    expect(humanPlayer.isDefeated()).toBe(false);
+  });
 });
