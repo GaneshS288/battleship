@@ -102,6 +102,8 @@ export class GameBoard {
         this.board[coordinates[0]][coordinates[1] + i]["ship"] = ship;
       }
     } else if (!isValidCoor) return "invalid coordinates";
+
+    return ship;
   }
 
   removeShip(coordinates) {
@@ -142,15 +144,12 @@ export class GameBoard {
   recieveAttack(x, y) {
     const node = this.board[x][y];
 
-    if(node.targeted === true) return false;
-
+    if (node.targeted === true) return false;
     else if (node.ship !== null) {
       node.ship.hit();
       node.targeted = true;
       return true;
-    }
-
-    else if (node.ship === null) {
+    } else if (node.ship === null) {
       node.targeted = true;
       return true;
     }

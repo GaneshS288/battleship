@@ -12,7 +12,7 @@ describe("gameboard", () => {
     const gameBoard = new GameBoard();
     const cruiser = new Ship(3, "curiser", "vertical");
 
-    gameBoard.placeShip([0, 1], cruiser);
+    expect(gameBoard.placeShip([0, 1], cruiser)).toBe(cruiser);
 
     expect(gameBoard.board[0][1].ship).toBe(cruiser);
     expect(gameBoard.board[1][1].ship).toBe(cruiser);
@@ -23,7 +23,7 @@ describe("gameboard", () => {
     const gameBoard = new GameBoard();
     const submarine = new Ship(3, "submarine", "horizontal");
 
-    gameBoard.placeShip([4, 0], submarine);
+    expect(gameBoard.placeShip([4, 0], submarine)).toBe(submarine);
 
     expect(gameBoard.board[4][0].ship).toBe(submarine);
     expect(gameBoard.board[4][1].ship).toBe(submarine);
