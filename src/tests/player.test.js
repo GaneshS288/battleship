@@ -28,15 +28,27 @@ describe("Human player", () => {
   });
 
   test("Create ships", () => {
-    const humanPlayer = new HumanPlayer('Ganesh');
+    const humanPlayer = new HumanPlayer("Ganesh");
     humanPlayer.createShips();
     const idleShips = humanPlayer.idleShips.map((ship) => ship.type);
 
-    expect(idleShips[0]).toBe('gunboat one');
-    expect(idleShips[1]).toBe('gunboat two');
-    expect(idleShips[2]).toBe('schooner one');
-    expect(idleShips[3]).toBe('schooner two');
-    expect(idleShips[4]).toBe('brig');
-    expect(idleShips[5]).toBe('men of war');
-  })
+    expect(idleShips[0]).toBe("gunboat one");
+    expect(idleShips[1]).toBe("gunboat two");
+    expect(idleShips[2]).toBe("schooner one");
+    expect(idleShips[3]).toBe("schooner two");
+    expect(idleShips[4]).toBe("brig");
+    expect(idleShips[5]).toBe("men of war");
+  });
+
+  test("place idle ship on player's board", () => {
+    const humanPlayer = new HumanPlayer("Ganesh");
+    humanPlayer.createShips();
+    const ship = humanPlayer.idleShips[0];
+    const secondShip = humanPlayer.idleShips[1];
+
+    expect(humanPlayer.placeShip([0, 3], humanPlayer.gameBoard, ship)).toBe(true);
+    expect(humanPlayer.placeShip([0, 3], humanPlayer.gameBoard, secondShip)).toBe(false);
+    expect(humanPlayer.idleShips.includes(ship)).toBe(false);
+    expect(humanPlayer.deployedShips.includes(ship)).toBe(true);
+  });
 });
