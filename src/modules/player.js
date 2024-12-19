@@ -10,18 +10,8 @@ export class HumanPlayer {
     this.deployedShips = [];
     this.createShips = createShips;
     this.placeShip = humanPlacesShip;
+    this.moveShip = humanMovesShip;
   }
-}
-
-function humanAttacks(coordinates, gameBoard) {
-  const x = coordinates[0];
-  const y = coordinates[1];
-  const ship = gameBoard.board[x][y].ship;
-  const result = gameBoard.recieveAttack(x, y);
-
-  if (result) {
-    return ship ? "hit" : "miss";
-  } else return "invalid target";
 }
 
 function createShips() {
@@ -42,6 +32,17 @@ function createShips() {
   ];
 }
 
+function humanAttacks(coordinates, gameBoard) {
+  const x = coordinates[0];
+  const y = coordinates[1];
+  const ship = gameBoard.board[x][y].ship;
+  const result = gameBoard.recieveAttack(x, y);
+
+  if (result) {
+    return ship ? "hit" : "miss";
+  } else return "invalid target";
+}
+
 function humanPlacesShip(coordinates, gameboard, ship) {
   const isSuccessful = gameboard.placeShip(coordinates, ship);
 
@@ -52,4 +53,11 @@ function humanPlacesShip(coordinates, gameboard, ship) {
 
     return true;
   } else return false;
+}
+
+function humanMovesShip(coordinates, gameBoard, ship) {
+  const isSuccessful = gameBoard.moveShip(coordinates, ship);
+
+  if (isSuccessful === ship) return true;
+  else if (isSuccessful === null) return false;
 }
