@@ -112,11 +112,11 @@ describe("CPU Player", () => {
     const ship = new Ship(2, "gunboat", "horizontal");
     const spyBoardPlaceShip = jest.spyOn(cpuPlayer.gameBoard, "placeShip");
     cpuPlayer.idleShips.push(ship);
-    
-    cpuPlayer.placeShip(cpuPlayer.gameBoard, ship)
-    cpuPlayer.placeShip(cpuPlayer.gameBoard, ship)
-    cpuPlayer.placeShip(cpuPlayer.gameBoard, ship)
-    cpuPlayer.placeShip(cpuPlayer.gameBoard, ship)
+
+    cpuPlayer.placeShip(cpuPlayer.gameBoard, ship);
+    cpuPlayer.placeShip(cpuPlayer.gameBoard, ship);
+    cpuPlayer.placeShip(cpuPlayer.gameBoard, ship);
+    cpuPlayer.placeShip(cpuPlayer.gameBoard, ship);
     expect(spyBoardPlaceShip.mock.calls.length).toBe(4);
   });
 });

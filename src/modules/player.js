@@ -4,6 +4,7 @@ import { GameBoard } from "./gameboard.js";
 export class HumanPlayer {
   constructor(name) {
     this.name = name;
+    this.type = "human";
     this.attack = humanAttacks;
     this.gameBoard = new GameBoard();
     this.idleShips = [];
@@ -19,6 +20,7 @@ export class HumanPlayer {
 export class CpuPlayer {
   constructor() {
     this.name = "CPU";
+    this.type = "cpu";
     this.gameBoard = new GameBoard();
     this.idleShips = [];
     this.deployedShips = [];
@@ -135,6 +137,6 @@ function cpuPlacesShip(gameBoard, ship) {
 function cpuGeneratesRandomCoordinates(gameBoardSize) {
   const x = Math.floor(Math.random() * gameBoardSize);
   const y = Math.floor(Math.random() * gameBoardSize);
-  
+
   return [x, y];
 }
