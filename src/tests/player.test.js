@@ -99,3 +99,24 @@ describe("Human player", () => {
     expect(humanPlayer.isDefeated()).toBe(false);
   });
 });
+
+describe("CPU Player", () => {
+  test("Attack random coordinates", () => {
+    const cpuPlayer = new CpuPlayer();
+    const gameBoard = new GameBoard();
+    expect(cpuPlayer.attack(gameBoard)).toBe("miss");
+  });
+
+  test("place ship at random coordinates", () => {
+    const cpuPlayer = new CpuPlayer();
+    const ship = new Ship(2, "gunboat", "horizontal");
+    const spyBoardPlaceShip = jest.spyOn(cpuPlayer.gameBoard, "placeShip");
+    cpuPlayer.idleShips.push(ship);
+    
+    cpuPlayer.placeShip(cpuPlayer.gameBoard, ship)
+    cpuPlayer.placeShip(cpuPlayer.gameBoard, ship)
+    cpuPlayer.placeShip(cpuPlayer.gameBoard, ship)
+    cpuPlayer.placeShip(cpuPlayer.gameBoard, ship)
+    expect(spyBoardPlaceShip.mock.calls.length).toBe(4);
+  });
+});

@@ -16,6 +16,19 @@ export class HumanPlayer {
   }
 }
 
+export class CpuPlayer {
+  constructor() {
+    this.name = "CPU";
+    this.gameBoard = new GameBoard();
+    this.idleShips = [];
+    this.deployedShips = [];
+    this.createShips = createShips;
+    this.attack = cpuAttacks;
+    this.placeShip = cpuPlacesShip;
+    this.isDefeated = isDefeated;
+  }
+}
+
 function createShips() {
   const gunboatOne = new Ship(2, "gunboat one", "horizontal");
   const gunboatTwo = new Ship(2, "gunboat two", "horizontal");
@@ -38,9 +51,8 @@ function isDefeated() {
   let isDefeated = true;
 
   this.deployedShips.forEach((ship) => {
-    if(!ship.isSunk())
-      isDefeated = false; 
-  })
+    if (!ship.isSunk()) isDefeated = false;
+  });
 
   return isDefeated;
 }
@@ -52,6 +64,7 @@ function humanAttacks(coordinates, gameBoard) {
   const result = gameBoard.recieveAttack(x, y);
 
   if (result) {
+    //if ship was present then return hit if it was null then return miss
     return ship ? "hit" : "miss";
   } else return "invalid target";
 }
@@ -86,4 +99,42 @@ function humanRemovesShip(coordinates, gameBoard) {
     this.idleShips.push(ship);
     return true;
   } else return false;
+}
+
+function cpuAttacks(gameBoard) {
+  const [x, y] = cpuGeneratesRandomCoordinates(gameBoard.size);
+  const ship = gameBoard.board[x][y].ship;
+  const result = gameBoard.recieveAttack(x, y);
+
+  if (result) {
+    //if ship was present then return hit if it was null then return miss
+    return ship ? "hit" : "miss";
+  } else return "invalid target";
+}
+
+function cpuPlacesShip(gameBoard, ship) {
+  //randomize horizontal or vertical alignment for ship
+  Math.ceil(Math.random() * 2)
+    ? (ship.alignment = "horizontal")
+    : (ship.alignment = "vertical");
+
+  const isSuccessful = gameBoard.placeShip(
+    cpuGeneratesRandomCoordinates(gameBoard.size),
+    ship
+  );
+
+  if (isSuccessful === ship) {
+    const shipIndex = this.idleShips.findIndex((idleShip) => idleShip === ship);
+    this.idleShips.splice(shipIndex, 1);
+    this.deployedShips.push(ship);
+
+    return true;
+  } else return false;
+}
+
+function cpuGeneratesRandomCoordinates(gameBoardSize) {
+  const x = Math.floor(Math.random() * gameBoardSize);
+  const y = Math.floor(Math.random() * gameBoardSize);
+  
+  return [x, y];
 }
