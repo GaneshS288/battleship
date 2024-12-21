@@ -10,8 +10,8 @@ describe("game controller", () => {
       { name: "CPU", type: "cpu" }
     );
 
-    expect(gameController.playerOne instanceof HumanPlayer).toBe(true);
-    expect(gameController.playerTwo instanceof CpuPlayer).toBe(true);
+    expect(gameController.playerOne.player instanceof HumanPlayer).toBe(true);
+    expect(gameController.playerTwo.player instanceof CpuPlayer).toBe(true);
   });
 
   test("active player places ships", () => {
@@ -38,7 +38,7 @@ describe("game controller", () => {
     );
 
     expect(gameController.activePlayerPlacesShip()).toBe(true);
-    expect(gameController.activePlayer).toBe(gameController.playerTwo);
-    expect(gameController.playerOne.idleShips.length).toBe(0);
+    expect(gameController.playerTwo.active).toBe(true);
+    expect(gameController.playerOne.player.idleShips.length).toBe(0);
   });
 });

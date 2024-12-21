@@ -2,9 +2,8 @@ import { CpuPlayer, HumanPlayer } from "./player.js";
 
 export class GameController {
   constructor() {
-    this.playerOne = null;
-    this.playerTwo = null;
-    this.activePlayer = null;
+    this.playerOne = {player : null, active : false};
+    this.playerTwo = {player : null, active : false};
   }
 
   initializePlayers(
@@ -24,13 +23,13 @@ export class GameController {
 
     players[0].createShips();
     players[1].createShips();
-    this.playerOne = players[0];
-    this.playerTwo = players[1];
-    this.activePlayer = this.playerOne;
+    this.playerOne.player = players[0];
+    this.playerOne.active = true;
+    this.playerTwo.player = players[1];
   }
 
   activePlayerPlacesShip(coordinates) {
-    const activePlayer = this.activePlayer;
+    const activePlayer = this.playerOne.active ? this.playerOne.player : this.playerTwo.player;
     let result;
 
     if (activePlayer.type === "cpu") {
@@ -54,9 +53,16 @@ export class GameController {
   }
 
   #changeActivePlayer() {
-    if (this.activePlayer.idleShips.length > 0) return false;
+    const activePlayer = this.playerOne.active ? this.playerOne.player : this.playerTwo.player;
 
-    this.activePlayer =
-      this.activePlayer === this.playerTwo ? this.playerOne : this.playerTwo;
+    if (this.playerOne.active) {
+        this.playerOne.active = false
+        this.playerTwo.active = true;
+    }
+
+    else if(this.playerTwo.active) {
+        this.playerTwo.active = false;
+        this.playerOne.active = true;
+    }
   }
 }
