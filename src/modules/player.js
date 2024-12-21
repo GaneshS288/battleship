@@ -83,8 +83,8 @@ function humanPlacesShip(coordinates, gameboard, ship) {
   } else return false;
 }
 
-function humanMovesShip(coordinates, gameBoard, ship) {
-  const isSuccessful = gameBoard.moveShip(coordinates, ship);
+function humanMovesShip(coordinates, gameBoard, ship, alignment) {
+  const isSuccessful = gameBoard.moveShip(coordinates, ship, alignment);
 
   if (isSuccessful === ship) return true;
   else if (isSuccessful === null) return false;
@@ -116,7 +116,7 @@ function cpuAttacks(gameBoard) {
 
 function cpuPlacesShip(gameBoard, ship) {
   //randomize horizontal or vertical alignment for ship
-  Math.ceil(Math.random() * 2)
+  Math.floor(Math.random() * 2)
     ? (ship.alignment = "horizontal")
     : (ship.alignment = "vertical");
 

@@ -70,6 +70,21 @@ describe("Human player", () => {
     );
   });
 
+  test("move deployed ship and change alignment", () => {
+    const humanPlayer = new HumanPlayer("Ganesh");
+    humanPlayer.createShips();
+    const ship = humanPlayer.idleShips[0];
+    humanPlayer.placeShip([0, 3], humanPlayer.gameBoard, ship);
+
+    expect(
+      humanPlayer.moveShip([0, 4], humanPlayer.gameBoard, ship, "vertical")
+    ).toBe(true);
+    expect(
+      humanPlayer.moveShip([0, 10], humanPlayer.gameBoard, ship, "horizontal")
+    ).toBe(false);
+    expect(ship.alignment).toBe("vertical");
+  });
+
   test("remove deployed ship", () => {
     const humanPlayer = new HumanPlayer("Ganesh");
     humanPlayer.createShips();
