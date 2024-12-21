@@ -1,13 +1,44 @@
-import { jest, describe, expect, test} from "@jest/globals";
+import { jest, describe, expect, test } from "@jest/globals";
 import { GameController } from "../modules/gameController.js";
 import { CpuPlayer, HumanPlayer } from "../modules/player.js";
 
 describe("game controller", () => {
-    test("initialize players", () => {
-        const gameController = new GameController();
-        gameController.initializePlayers({name : "Ganesh", type : "human"}, {name : "CPU", type : "cpu"});
+  test("initialize players", () => {
+    const gameController = new GameController();
+    gameController.initializePlayers(
+      { name: "Ganesh", type: "human" },
+      { name: "CPU", type: "cpu" }
+    );
 
-        expect(gameController.playerOne instanceof HumanPlayer).toBe(true);
-        expect(gameController.playerTwo instanceof CpuPlayer).toBe(true);
-    })
-})
+    expect(gameController.playerOne instanceof HumanPlayer).toBe(true);
+    expect(gameController.playerTwo instanceof CpuPlayer).toBe(true);
+  });
+
+  test("active player places ships", () => {
+    const gameController = new GameController();
+    gameController.initializePlayers(
+      { name: "Ganesh", type: "human" },
+      { name: "CPU", type: "cpu" }
+    );
+
+    expect(gameController.activePlayerPlacesShip([0, 0])).toBe(true);
+    expect(gameController.activePlayerPlacesShip([0, 0])).toBe(false);
+    expect(gameController.activePlayerPlacesShip([1, 0])).toBe(true);
+    expect(gameController.activePlayerPlacesShip([2, 0])).toBe(true);
+    expect(gameController.activePlayerPlacesShip([3, 0])).toBe(true);
+    expect(gameController.activePlayerPlacesShip([4, 0])).toBe(true);
+    expect(gameController.activePlayerPlacesShip([6, 0])).toBe(true);
+  });
+
+  test("active player places ship works with cpu player", () => {
+    const gameController = new GameController();
+    gameController.initializePlayers(
+      { name: "CPU", type: "cpu" },
+      { name: "Ganesh", type: "human" }
+    );
+
+    expect(gameController.activePlayerPlacesShip()).toBe(true);
+    expect(gameController.activePlayer).toBe(gameController.playerTwo);
+    expect(gameController.playerOne.idleShips.length).toBe(0);
+  });
+});
