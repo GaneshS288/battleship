@@ -33,14 +33,14 @@ const gameBoardContainer = document.querySelectorAll(".gameBoard");
 createGameBoard(playerInfoTwo, gameBoardContainer[0]);
 createGameBoard(playerInfoOne, gameBoardContainer[1]);
 
-gameBoardContainer[0].addEventListener("click", (e) => {
-  e.stopPropagation();
-  console.log(e.target);
-});
+gameBoardContainer[0].addEventListener(
+  "mouseover",
+  Render.selectedShipPlacement
+);
 
 const idleAreas = document.querySelectorAll(".idle-area");
 
 Render.idleArea(gameController.playerOne.player.idleShips[5], idleAreas[1]);
-gameController.playerOne.player.idleShips[5].alignment = "vertical"
+gameController.playerOne.player.idleShips[5].alignment = "vertical";
 Render.idleArea(gameController.playerOne.player.idleShips[5], idleAreas[0]);
 Render.idleArea(null, idleAreas[1]);

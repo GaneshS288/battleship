@@ -103,6 +103,15 @@ div.idle-area {
     background-color: white;
 }
 
+/*used when checking ship placement on board*/
+#validPlacement {
+    background-color: greenyellow;
+}
+
+#invalidPlacement {
+    background-color: red;
+}
+
 /*footer style*/
 
 footer {
