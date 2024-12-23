@@ -1,0 +1,38 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    grid-template-columns: auto auto;
+    min-height: 100vh;
+}
+
+.gameBoard {
+    min-width: 400px;
+    min-height: 400px;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    border: 1px solid black;
+}
+
+.targeted.ship {
+    background: red;
+}
+
+.targeted.empty {
+    background: gray;
+}
+
+.gameBoard.active > .untargeted.ship {
+    background: teal;
+}
+
+.untargeted.ship {
+    background-color: white;
+}
