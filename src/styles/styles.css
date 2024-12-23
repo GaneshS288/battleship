@@ -23,7 +23,7 @@ header {
     align-content: center;
     justify-content: center;
     grid-template-columns: auto auto auto;
-    column-gap: 10px;
+    column-gap: 30px;
     row-gap: 20px;
 }
 
@@ -50,20 +50,17 @@ div.idle-area {
     display: flex;
     justify-content: center;
     align-items: end;
-    min-width: 300px;
-    min-height: 300px;
+    min-width: 250px;
+    min-height: 250px;
     border: solid black;
     border-width: 0 0 1px 0;
 }
 
-.idle-area > .ship {
-    display: grid;
-    min-width: 200px;
-    min-height: 40px;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-    margin-bottom: 20px;
+.ship.selected {
+    background-color: orangered;
 }
 
+/*divs inside ideal area ship*/
 .idle-area > .ship > div {
     border: dotted 1px black;
 }
