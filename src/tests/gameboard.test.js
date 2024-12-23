@@ -23,11 +23,11 @@ describe("gameboard", () => {
     const gameBoard = new GameBoard();
     const submarine = new Ship(3, "submarine", "horizontal");
 
-    expect(gameBoard.placeShip([4, 0], submarine)).toBe(submarine);
+    expect(gameBoard.placeShip([7, 0], submarine)).toBe(submarine);
 
-    expect(gameBoard.board[4][0].ship).toBe(submarine);
-    expect(gameBoard.board[4][1].ship).toBe(submarine);
-    expect(gameBoard.board[4][2].ship).toBe(submarine);
+    expect(gameBoard.board[7][0].ship).toBe(submarine);
+    expect(gameBoard.board[7][1].ship).toBe(submarine);
+    expect(gameBoard.board[7][2].ship).toBe(submarine);
   });
 
   test("starting coordinates set on placed ships", () => {

@@ -32,8 +32,8 @@ export class GameBoard {
     if (x < 0 || y < 0 || x >= this.size || y >= this.size) return false;
     //check if coordinates + ship length exceed gameboard size
     else if (
-      (x + ship.length >= this.size && ship.alignment === "vertical") ||
-      (y + ship.length >= this.size && ship.alignment === "horizontal")
+      (x + (ship.length - 1) >= this.size && ship.alignment === "vertical") ||
+      (y + (ship.length - 1) >= this.size && ship.alignment === "horizontal")
     ) {
       return false;
     }
