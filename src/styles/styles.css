@@ -6,10 +6,75 @@
 
 body {
     display: grid;
-    align-items: center;
-    justify-items: center;
-    grid-template-columns: auto auto;
+    justify-content: center;
+    grid-template-rows: 40px auto auto;
     min-height: 100vh;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    align-self: start;
+    margin-top: 40px;
+}
+
+.middle {
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    grid-template-columns: auto auto auto;
+    column-gap: 10px;
+    row-gap: 20px;
+}
+
+
+/*gameBoard container*/
+.middle > div:nth-child(2) {
+    display: grid;
+    align-content: center;
+    justify-content: center;
+    grid-template-columns: auto auto;
+    column-gap: 60px;
+}
+
+/*idle-area container*/
+.middle > div:nth-child(odd) {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: center;
+    gap: 20px;
+}
+
+div.idle-area {
+    display: flex;
+    justify-content: center;
+    align-items: end;
+    min-width: 300px;
+    min-height: 300px;
+    border: solid black;
+    border-width: 0 0 1px 0;
+}
+
+.idle-area > .ship {
+    display: grid;
+    min-width: 200px;
+    min-height: 40px;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    margin-bottom: 20px;
+}
+
+.idle-area > .ship > div {
+    border: dotted 1px black;
+}
+
+.gameBoard-container > div {
+    display: grid;
+    grid-template-rows: 40px 1fr;
+}
+
+.gameBoard-container > div > p {
+    justify-self: center;
 }
 
 .gameBoard {
@@ -19,6 +84,10 @@ body {
     grid-template-columns: repeat(10, 1fr);
     grid-template-rows: repeat(10, 1fr);
     border: 1px solid black;
+}
+
+.gameBoard > div {
+    border: 1px dotted black;
 }
 
 .targeted.ship {
@@ -35,4 +104,10 @@ body {
 
 .untargeted.ship {
     background-color: white;
+}
+
+/*footer style*/
+
+footer {
+    justify-self: center;
 }
