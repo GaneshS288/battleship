@@ -117,3 +117,9 @@ div.idle-area {
 footer {
     justify-self: center;
 }
+
+button {
+    min-width: 80px;
+    min-height: 30px;
+    border-radius: 5%;
+}

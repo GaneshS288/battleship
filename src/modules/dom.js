@@ -1,4 +1,6 @@
 const gameBoardContainers = document.querySelectorAll(".gameBoard");
+const dialog = document.querySelector("dialog");
+
 gameBoardContainers[0].addEventListener("mouseleave", clearAllPlacementId);
 
 //get all possible coordinates ship can occupy when a gameBoard cell is hovered over by taking that cell's coordinates as starting point
@@ -128,7 +130,7 @@ export class Render {
     activeIdleArea.append(shipElement);
   }
 
-  //
+  //display placement of selected ship when user hovers over gameboard
   static selectedShipPlacement(event) {
     if (event.target === event.currentTarget) return null;
 
@@ -150,7 +152,7 @@ export class Render {
       length,
       alignment
     );
-
+    //clear all id so new ones can be applied to gameboard cells
     clearAllPlacementId();
 
     if (isPlacementValid) {
@@ -173,5 +175,35 @@ export class Render {
 
     console.log(isPlacementValid);
     console.log(possibleCoordinates);
+  }
+
+  static playerTypeSelection() {
+    const choicePara = createElement("p", ["choice-text"]);
+    const buttonContainer = createElement("div", ["choice-button-container"]);
+    const humanPlayerButton = createElement("button", ["human-player-button"]);
+    const cpuPlayerButton = createElement("button", ["cpuPlayerButton"]);
+
+    choicePara.textContent = "Which type of player do you want to face off aganist?"
+    humanPlayerButton.textContent = "Human";
+    cpuPlayerButton.textContent = "cpu";
+
+    humanPlayerButton.addEventListener("click", (e) => {
+      console.log(e.target.textContent);
+      choicePara.remove();
+      buttonContainer.remove();
+      dialog.close();
+    })
+
+    cpuPlayerButton.addEventListener("click", (e) => {
+      console.log(e.target.textContent);
+      choicePara.remove();
+      buttonContainer.remove();
+      dialog.close();
+    })
+
+    buttonContainer.append(humanPlayerButton, cpuPlayerButton);
+    dialog.append(choicePara, buttonContainer);
+
+    dialog.showModal();
   }
 }

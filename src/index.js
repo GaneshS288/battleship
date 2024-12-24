@@ -41,6 +41,8 @@ gameBoardContainer[0].addEventListener(
 const idleAreas = document.querySelectorAll(".idle-area");
 
 Render.idleArea(gameController.playerOne.player.idleShips[5], idleAreas[1]);
-gameController.playerOne.player.idleShips[5].alignment = "vertical";
+//gameController.playerOne.player.idleShips[5].alignment = "vertical";
 Render.idleArea(gameController.playerOne.player.idleShips[5], idleAreas[0]);
 Render.idleArea(null, idleAreas[1]);
+
+Render.playerTypeSelection();
