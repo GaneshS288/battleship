@@ -16,8 +16,10 @@ export class GameController {
       switch (playerData.type) {
         case "human":
           players.push(new HumanPlayer(playerData.name));
+          break;
         case "cpu":
           players.push(new CpuPlayer());
+          break;
       }
     });
 
