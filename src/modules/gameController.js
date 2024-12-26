@@ -79,8 +79,14 @@ export class GameController {
     const activePlayer = this.playerOne.active
       ? this.playerOne.player
       : this.playerTwo.player;
-    
-    return activePlayer.removeShip(coordinates, activePlayer.gameBoard);
+
+    const result = activePlayer.removeShip(coordinates, activePlayer.gameBoard);
+
+    if (result) {
+      PubSub.publish("gameBoard changed", [this.playerOne, this.playerTwo]);
+      PubSub.publish("idle area changed", [this.playerOne], this.playerTwo);
+    }
+    return result;
   }
 
   changeActivePlayer() {

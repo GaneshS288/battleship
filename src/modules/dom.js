@@ -51,17 +51,14 @@ function areValidCoordinates(coordinates, length, alignment) {
   return areValid;
 }
 
-function getSelectedShipInfo() {
+function getSelectedShipInfo(event) {
   const selectedShip = document.querySelector(".selected");
   if (!selectedShip) return null;
 
   const alignment = selectedShip.dataset.alignment;
   const length = Number(selectedShip.dataset.length);
-  const coordinates = event.target.dataset.coordinates
-    .split(",")
-    .map((coor) => Number(coor));
 
-  return {alignment, length, coordinates};  
+  return { alignment, length };
 }
 
 //clear all gameboard cells with id so we can assign new ids to render them
@@ -158,10 +155,13 @@ function createIdleArea(ship, activeIdleArea) {
 function displayShipPlacement(event) {
   if (event.target === event.currentTarget) return null;
 
-  const selectedShip = getSelectedShipInfo();
+  const selectedShip = getSelectedShipInfo(event);
   if (!selectedShip) return null;
 
-  const {alignment, length, coordinates} = selectedShip;
+  const { alignment, length } = selectedShip;
+  const coordinates = event.target.dataset.coordinates
+    .split(",")
+    .map((coor) => Number(coor));
   const isPlacementValid = areValidCoordinates(coordinates, length, alignment);
   const possibleCoordinates = getPossibleCoordinates(
     coordinates,
@@ -194,17 +194,31 @@ function displayShipPlacement(event) {
 }
 
 //when clicked on gameboard place the selected ship
-function placeShip(event) {
+function placeShipHandler(event) {
   if (event.target === event.currentTarget) return null;
 
-  const selectedShip = getSelectedShipInfo();
+  const selectedShip = getSelectedShipInfo(event);
   if (!selectedShip) return null;
 
-  const { alignment, length, coordinates} = selectedShip; 
+  const { alignment, length } = selectedShip;
+  const coordinates = event.target.dataset.coordinates
+    .split(",")
+    .map((coor) => Number(coor));
   const isPlacementValid = areValidCoordinates(coordinates, length, alignment);
 
   if (isPlacementValid) PubSub.publish("ship placed", [coordinates]);
   else return null;
+}
+
+function removeShipHandler(event) {
+  if (event.target === event.currentTarget) return null;
+  else if (event.target.classList.contains("ship")) {
+    const coordinates = event.target.dataset.coordinates
+      .split(",")
+      .map((coor) => Number(coor));
+
+    PubSub.publish("ship removed", [coordinates]);
+  }
 }
 
 export class Render {
@@ -261,7 +275,8 @@ export class Render {
     if (activePlayer.allShipsDeployed === false) {
       activeGameBoard.classList.add("active");
       activeGameBoard.addEventListener("mouseover", displayShipPlacement);
-      activeGameBoard.addEventListener("click", placeShip);
+      activeGameBoard.addEventListener("click", placeShipHandler);
+      activeGameBoard.addEventListener("dblclick", removeShipHandler);
     } else if (activePlayer.allShipsDeployed === true) {
       activeGameBoard.classList.add("active");
     }
