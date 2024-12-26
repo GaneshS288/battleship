@@ -9,6 +9,6 @@ PubSub.subscribe("opponent selection prompted", Render.opponentSelection);
 PubSub.subscribe("idle area changed", Render.idleAreas);
 PubSub.subscribe("gameBoard changed", Render.gameBoards);
 PubSub.subscribe("opponent selected", gameController.initializePlayers.bind(gameController));
-
+PubSub.subscribe("ship placed", gameController.activePlayerPlacesShip.bind(gameController));
 
 Render.startButton();

@@ -31,12 +31,21 @@ function getPossibleCoordinates(coordinates, length, alignment) {
 function areValidCoordinates(coordinates, length, alignment) {
   const x = coordinates[0];
   const y = coordinates[1];
-  let areValid = false;
+  const possibleCoordinates = getPossibleCoordinates(
+    coordinates,
+    length,
+    alignment
+  );
+  let areValid = true;
 
-  if (alignment === "vertical") {
-    x + (length - 1) < 10 ? (areValid = true) : (areValid = false);
-  } else if (alignment === "horizontal") {
-    y + (length - 1) < 10 ? (areValid = true) : (areValid = false);
+  if (possibleCoordinates.length < length) return (areValid = false);
+  else {
+    possibleCoordinates.forEach((coor) => {
+      const cell = document.querySelector(
+        `div[data-coordinates = '${coor[0]},${coor[1]}'`
+      );
+      if (cell.classList.contains("ship")) areValid = false;
+    });
   }
 
   return areValid;
@@ -87,8 +96,8 @@ function createGameBoard(gameBoard, domGameBoard) {
 }
 
 function createIdleArea(ship, activeIdleArea) {
-  if (ship === null) {
-    return activeIdleArea.firstChild.remove();
+  if (ship === null || ship === undefined) {
+    return null;
   }
 
   const shipElement = createElement(
@@ -132,6 +141,67 @@ function createIdleArea(ship, activeIdleArea) {
   activeIdleArea.append(shipElement);
 }
 
+//display placement of selected ship when user hovers over gameboard
+function displayShipPlacement(event) {
+  if (event.target === event.currentTarget) return null;
+
+  const selectedShip = document.querySelector(".selected");
+  if (!selectedShip) return null;
+
+  const alignment = selectedShip.dataset.alignment;
+  const length = Number(selectedShip.dataset.length);
+  const coordinates = event.target.dataset.coordinates
+    .split(",")
+    .map((coor) => Number(coor));
+  const isPlacementValid = areValidCoordinates(coordinates, length, alignment);
+  const possibleCoordinates = getPossibleCoordinates(
+    coordinates,
+    length,
+    alignment
+  );
+  //clear all id so new ones can be applied to gameboard cells
+  clearAllPlacementId();
+
+  if (isPlacementValid) {
+    possibleCoordinates.forEach((coordinates) => {
+      document
+        .querySelector(
+          `div[data-coordinates = '${coordinates[0]},${coordinates[1]}'`
+        )
+        .setAttribute("id", "validPlacement");
+    });
+  } else if (!isPlacementValid) {
+    possibleCoordinates.forEach((coordinates) => {
+      document
+        .querySelector(
+          `div[data-coordinates = '${coordinates[0]},${coordinates[1]}'`
+        )
+        .setAttribute("id", "invalidPlacement");
+    });
+  }
+
+  console.log(isPlacementValid);
+  console.log(possibleCoordinates);
+}
+
+//when clicked on gameboard place the selected ship
+function placeShip(event) {
+  if (event.target === event.currentTarget) return null;
+
+  const selectedShip = document.querySelector(".selected");
+  if (!selectedShip) return null;
+
+  const alignment = selectedShip.dataset.alignment;
+  const length = Number(selectedShip.dataset.length);
+  const coordinates = event.target.dataset.coordinates
+    .split(",")
+    .map((coor) => Number(coor));
+  const isPlacementValid = areValidCoordinates(coordinates, length, alignment);
+
+  if(isPlacementValid) PubSub.publish("ship placed", [coordinates]);
+  else return null;
+}
+
 export class Render {
   static startButton() {
     Array.from(footer.childNodes).forEach((child) => child.remove());
@@ -171,6 +241,10 @@ export class Render {
     const playerTwoDomBoard = gameBoardContainers[1];
     const playerOneGameBoard = playerOne.player.gameBoard.board;
     const playerTwoGameBoard = playerTwo.player.gameBoard.board;
+    const activeGameBoard = playerOne.active
+      ? playerOneDomBoard
+      : playerTwoDomBoard;
+    const activePlayer = playerOne.active ? playerOne : playerTwo;
 
     //remove active class and clean gameboard so new cells can be rendered
     gameBoardContainers.forEach((container) => {
@@ -178,59 +252,17 @@ export class Render {
       Array.from(container.childNodes).forEach((child) => child.remove());
     });
 
-    //assign active class so that only active player can see thier own ships on board
-    if (playerOne.active) playerOneDomBoard.classList.add("active");
-    else if (playerTwo.active) playerTwoDomBoard.classList.add("active");
+    //assign event lisnters for placing ships
+    if (activePlayer.allShipsDeployed === false) {
+      activeGameBoard.classList.add("active");
+      activeGameBoard.addEventListener("mouseover", displayShipPlacement);
+      activeGameBoard.addEventListener("click", placeShip);
+    } else if (activePlayer.allShipsDeployed === true) {
+      activeGameBoard.classList.add("active");
+    }
 
     createGameBoard(playerOneGameBoard, playerOneDomBoard);
     createGameBoard(playerTwoGameBoard, playerTwoDomBoard);
-  }
-
-  //display placement of selected ship when user hovers over gameboard
-  static selectedShipPlacement(event) {
-    if (event.target === event.currentTarget) return null;
-
-    const selectedShip = document.querySelector(".selected");
-    if (!selectedShip) return null;
-
-    const alignment = selectedShip.dataset.alignment;
-    const length = Number(selectedShip.dataset.length);
-    const coordinates = event.target.dataset.coordinates
-      .split(",")
-      .map((coor) => Number(coor));
-    const isPlacementValid = areValidCoordinates(
-      coordinates,
-      length,
-      alignment
-    );
-    const possibleCoordinates = getPossibleCoordinates(
-      coordinates,
-      length,
-      alignment
-    );
-    //clear all id so new ones can be applied to gameboard cells
-    clearAllPlacementId();
-
-    if (isPlacementValid) {
-      possibleCoordinates.forEach((coordinates) => {
-        document
-          .querySelector(
-            `div[data-coordinates = '${coordinates[0]},${coordinates[1]}'`
-          )
-          .setAttribute("id", "validPlacement");
-      });
-    } else if (!isPlacementValid) {
-      possibleCoordinates.forEach((coordinates) => {
-        document
-          .querySelector(
-            `div[data-coordinates = '${coordinates[0]},${coordinates[1]}'`
-          )
-          .setAttribute("id", "invalidPlacement");
-      });
-    }
-
-    console.log(isPlacementValid);
-    console.log(possibleCoordinates);
   }
 
   static opponentSelection() {

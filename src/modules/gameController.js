@@ -67,17 +67,21 @@ export class GameController {
       if (activePlayer.idleShips.length === 0) this.#changeShipDeployedStatus();
     }
 
+    if (result === true) {
+      PubSub.publish("gameBoard changed", [this.playerOne, this.playerTwo]);
+      PubSub.publish("idle area changed", [this.playerOne, this.playerTwo]);
+    }
+
     return result;
   }
 
   changeActivePlayer() {
     let activePlayer;
 
-    if(!this.playerOne.active && !this.playerTwo.active) {
+    if (!this.playerOne.active && !this.playerTwo.active) {
       this.playerOne.active = true;
       activePlayer = this.playerOne;
-    }
-    else if (this.playerOne.active && this.playerOne.allShipsDeployed) {
+    } else if (this.playerOne.active && this.playerOne.allShipsDeployed) {
       this.playerOne.active = false;
       this.playerTwo.active = true;
       activePlayer = this.playerTwo;
