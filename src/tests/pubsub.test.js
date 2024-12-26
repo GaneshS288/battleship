@@ -24,7 +24,7 @@ describe("pubsub", () => {
   test("publishing event calls subscribers", () => {
     const subscriberFunction = jest.fn();
     PubSub.subscribe("publish test", subscriberFunction);
-    PubSub.publish("publish test", "hello");
+    PubSub.publish("publish test", ["hello"]);
 
     expect(subscriberFunction.mock.calls[0][0]).toBe("hello");
     expect(subscriberFunction.mock.calls.length).toBe(1);

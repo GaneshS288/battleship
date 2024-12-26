@@ -12,7 +12,8 @@ export class PubSub {
         this.Subscribers[event] = this.Subscribers[event].filter((sub) => sub !== subscriber);
     }
 
-    static publish(event, payload) {
-        this.Subscribers[event].forEach(subscriber => subscriber(payload));
+    static publish(event, payload = []) {
+        if(this.Subscribers[event] === undefined) return;
+        this.Subscribers[event].forEach(subscriber => subscriber(...payload));
     }
 }
