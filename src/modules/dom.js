@@ -51,7 +51,20 @@ function areValidCoordinates(coordinates, length, alignment) {
   return areValid;
 }
 
-//clear all gameboard cells with id so we can render more
+function getSelectedShipInfo() {
+  const selectedShip = document.querySelector(".selected");
+  if (!selectedShip) return null;
+
+  const alignment = selectedShip.dataset.alignment;
+  const length = Number(selectedShip.dataset.length);
+  const coordinates = event.target.dataset.coordinates
+    .split(",")
+    .map((coor) => Number(coor));
+
+  return {alignment, length, coordinates};  
+}
+
+//clear all gameboard cells with id so we can assign new ids to render them
 function clearAllPlacementId() {
   const validElements = Array.from(
     document.querySelectorAll("#validPlacement")
@@ -145,14 +158,10 @@ function createIdleArea(ship, activeIdleArea) {
 function displayShipPlacement(event) {
   if (event.target === event.currentTarget) return null;
 
-  const selectedShip = document.querySelector(".selected");
+  const selectedShip = getSelectedShipInfo();
   if (!selectedShip) return null;
 
-  const alignment = selectedShip.dataset.alignment;
-  const length = Number(selectedShip.dataset.length);
-  const coordinates = event.target.dataset.coordinates
-    .split(",")
-    .map((coor) => Number(coor));
+  const {alignment, length, coordinates} = selectedShip;
   const isPlacementValid = areValidCoordinates(coordinates, length, alignment);
   const possibleCoordinates = getPossibleCoordinates(
     coordinates,
@@ -188,14 +197,10 @@ function displayShipPlacement(event) {
 function placeShip(event) {
   if (event.target === event.currentTarget) return null;
 
-  const selectedShip = document.querySelector(".selected");
+  const selectedShip = getSelectedShipInfo();
   if (!selectedShip) return null;
 
-  const alignment = selectedShip.dataset.alignment;
-  const length = Number(selectedShip.dataset.length);
-  const coordinates = event.target.dataset.coordinates
-    .split(",")
-    .map((coor) => Number(coor));
+  const { alignment, length, coordinates} = selectedShip; 
   const isPlacementValid = areValidCoordinates(coordinates, length, alignment);
 
   if (isPlacementValid) PubSub.publish("ship placed", [coordinates]);
