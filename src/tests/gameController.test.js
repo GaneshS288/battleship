@@ -41,4 +41,27 @@ describe("game controller", () => {
     expect(gameController.playerTwo.active).toBe(true);
     expect(gameController.playerOne.player.idleShips.length).toBe(0);
   });
+
+  test("active player can remove ships", () => {
+    const gameController = new GameController();
+    gameController.initializePlayers(
+      { name: "Ganesh", type: "human" },
+      { name: "CPU", type: "cpu" }
+    );
+
+    gameController.activePlayerPlacesShip([3,3]);
+
+    expect(gameController.activePlayerRemovesShip([3,3])).toBe(true);
+    expect(gameController.playerOne.player.deployedShips.length).toBe(0);
+  })
+
+  test("trying to remove from empty cell returns false", () => {
+    const gameController = new GameController();
+    gameController.initializePlayers(
+      { name: "Ganesh", type: "human" },
+      { name: "CPU", type: "cpu" }
+    );
+
+    expect(gameController.activePlayerRemovesShip([3,3])).toBe(false);
+  })
 });

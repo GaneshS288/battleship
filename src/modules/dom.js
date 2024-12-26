@@ -198,7 +198,7 @@ function placeShip(event) {
     .map((coor) => Number(coor));
   const isPlacementValid = areValidCoordinates(coordinates, length, alignment);
 
-  if(isPlacementValid) PubSub.publish("ship placed", [coordinates]);
+  if (isPlacementValid) PubSub.publish("ship placed", [coordinates]);
   else return null;
 }
 
