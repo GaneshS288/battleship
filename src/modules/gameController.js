@@ -3,8 +3,18 @@ import { PubSub } from "./pubsub.js";
 
 export class GameController {
   constructor() {
-    this.playerOne = { player: null, active: false, allShipsDeployed: false, ready : false };
-    this.playerTwo = { player: null, active: false, allShipsDeployed: false, ready : false };
+    this.playerOne = {
+      player: null,
+      active: false,
+      allShipsDeployed: false,
+      ready: false,
+    };
+    this.playerTwo = {
+      player: null,
+      active: false,
+      allShipsDeployed: false,
+      ready: false,
+    };
   }
 
   #changeShipDeployedStatus() {
@@ -86,6 +96,26 @@ export class GameController {
       PubSub.publish("gameBoard changed", [this.playerOne, this.playerTwo]);
       PubSub.publish("idle area changed", [this.playerOne, this.playerTwo]);
     }
+    return result;
+  }
+
+  activePlayerAttacks(coordinates) {
+    const activePlayer = this.playerOne.active
+      ? this.playerOne
+      : this.playerTwo;
+    const inactivePlayer = this.playerOne.active
+      ? this.playerTwo
+      : this.playerOne;
+
+    let result;
+
+    if (activePlayer.player.type === "cpu") {
+      result = activePlayer.player.attack(inactivePlayer.player.gameBoard);
+      this.changeActivePlayer();
+    } else {
+      result = activePlayer.player.attack(coordinates, inactivePlayer.player.gameBoard);
+    }
+
     return result;
   }
 

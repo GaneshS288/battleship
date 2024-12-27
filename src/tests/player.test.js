@@ -120,6 +120,9 @@ describe("CPU Player", () => {
     const cpuPlayer = new CpuPlayer();
     const gameBoard = new GameBoard();
     expect(cpuPlayer.attack(gameBoard)).toBe("miss");
+    expect(cpuPlayer.attack(gameBoard)).toBe("miss");
+    expect(cpuPlayer.attack(gameBoard)).toBe("miss");
+    expect(cpuPlayer.attack(gameBoard)).toBe("miss");
   });
 
   test("place ship at random coordinates", () => {

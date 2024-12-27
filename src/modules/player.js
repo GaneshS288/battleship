@@ -104,9 +104,14 @@ function humanRemovesShip(coordinates, gameBoard) {
 }
 
 function cpuAttacks(gameBoard) {
-  const [x, y] = cpuGeneratesRandomCoordinates(gameBoard.size);
-  const ship = gameBoard.board[x][y].ship;
-  const result = gameBoard.recieveAttack(x, y);
+  let result = false;
+  let ship = null;
+
+  while (result === false) {
+    const [x, y] = cpuGeneratesRandomCoordinates(gameBoard.size);
+    ship = gameBoard.board[x][y].ship;
+    result = gameBoard.recieveAttack(x, y);
+  }
 
   if (result) {
     //if ship was present then return hit if it was null then return miss
