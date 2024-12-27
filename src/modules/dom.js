@@ -5,8 +5,6 @@ const idleAreas = document.querySelectorAll(".idle-area");
 const dialog = document.querySelector("dialog");
 const footer = document.querySelector("footer");
 
-gameBoardContainers[0].addEventListener("mouseleave", clearAllPlacementId);
-
 //get all possible coordinates ship can occupy when a gameBoard cell is hovered over by taking that cell's coordinates as starting point
 function getPossibleCoordinates(coordinates, length, alignment) {
   const x = coordinates[0];
@@ -42,7 +40,7 @@ function areValidCoordinates(coordinates, length, alignment) {
   else {
     possibleCoordinates.forEach((coor) => {
       const cell = document.querySelector(
-        `div[data-coordinates = '${coor[0]},${coor[1]}'`
+        `.active > div[data-coordinates = '${coor[0]},${coor[1]}'`
       );
       if (cell.classList.contains("ship")) areValid = false;
     });
@@ -105,6 +103,14 @@ function createGameBoard(gameBoard, domGameBoard) {
   });
 }
 
+function removeGameboardEventListners(gameBoardArray) {
+  gameBoardArray.forEach((gameBoard) => {
+    gameBoard.removeEventListener("click", placeShipHandler);
+    gameBoard.removeEventListener("mouseover", displayShipPlacementHandler);
+    gameBoard.removeEventListener("dblclick", removeShipHandler);
+  });
+}
+
 function createIdleArea(ship, activeIdleArea) {
   if (ship === null || ship === undefined) {
     return null;
@@ -151,8 +157,42 @@ function createIdleArea(ship, activeIdleArea) {
   activeIdleArea.append(shipElement);
 }
 
+function createAlignmentButtonsAndInstructions(areShipsDeployed) {
+  const continueButton = createElement("button", ["continue-button"]);
+  const alignmentButtonContainer = createElement("button", [
+    "alignment-button-container",
+  ]);
+  const horizontalButton = createElement("button", ["horizontal-button"]);
+  const verticalButton = createElement("button", ["vertical-button"]);
+  const instructionsPara = createElement("p", ["instructions"]);
+
+  continueButton.textContent = "Continue";
+  horizontalButton.textContent = "horizontal";
+  verticalButton.textContent = "Vertical";
+  instructionsPara.innerText =
+    "Click on a ship in idle area to select it. Click again to unselect. \r\n While A ship is selected clicked on a square in your gamebaord to place it. \r\n Double click on a placed ship to remove it from gameboard and send it to idle area.";
+
+  continueButton.addEventListener("click", () => {
+    PubSub.publish("change player");
+  });
+
+  horizontalButton.addEventListener("click", () => {
+    PubSub.publish("alignment changed", ["horizontal"]);
+  });
+
+  verticalButton.addEventListener("click", () => {
+    PubSub.publish("alignment changed", ["vertical"]);
+  });
+
+  alignmentButtonContainer.append(horizontalButton, verticalButton);
+
+  if (areShipsDeployed)
+    footer.append(continueButton, alignmentButtonContainer, instructionsPara);
+  else footer.append(alignmentButtonContainer, instructionsPara);
+}
+
 //display placement of selected ship when user hovers over gameboard
-function displayShipPlacement(event) {
+function displayShipPlacementHandler(event) {
   if (event.target === event.currentTarget) return null;
 
   const selectedShip = getSelectedShipInfo(event);
@@ -175,7 +215,7 @@ function displayShipPlacement(event) {
     possibleCoordinates.forEach((coordinates) => {
       document
         .querySelector(
-          `div[data-coordinates = '${coordinates[0]},${coordinates[1]}'`
+          `.active > div[data-coordinates = '${coordinates[0]},${coordinates[1]}'`
         )
         .setAttribute("id", "validPlacement");
     });
@@ -183,7 +223,7 @@ function displayShipPlacement(event) {
     possibleCoordinates.forEach((coordinates) => {
       document
         .querySelector(
-          `div[data-coordinates = '${coordinates[0]},${coordinates[1]}'`
+          `.active > div[data-coordinates = '${coordinates[0]},${coordinates[1]}'`
         )
         .setAttribute("id", "invalidPlacement");
     });
@@ -210,6 +250,7 @@ function placeShipHandler(event) {
   else return null;
 }
 
+//double click to remove ship from gameboard
 function removeShipHandler(event) {
   if (event.target === event.currentTarget) return null;
   else if (event.target.classList.contains("ship")) {
@@ -238,7 +279,7 @@ export class Render {
     const playerOneArea = idleAreas[0];
     const playerTwoArea = idleAreas[1];
     const playerOneShip = playerOne.player.idleShips[0];
-    const playerTwoShip = playerOne.player.idleShips[1];
+    const playerTwoShip = playerTwo.player.idleShips[0];
 
     //remove active class and clean the idle area of any elements so new ones can be rendered
     idleAreas.forEach((area) => {
@@ -267,22 +308,38 @@ export class Render {
 
     //remove active class and clean gameboard so new cells can be rendered
     gameBoardContainers.forEach((container) => {
-      container.classList.remove(".active");
+      container.classList.remove("active");
       Array.from(container.childNodes).forEach((child) => child.remove());
     });
 
+    removeGameboardEventListners([playerOneDomBoard, playerTwoDomBoard]);
     //assign event lisnters for placing ships
-    if (activePlayer.allShipsDeployed === false) {
+    if (activePlayer.ready === false) {
       activeGameBoard.classList.add("active");
-      activeGameBoard.addEventListener("mouseover", displayShipPlacement);
+      activeGameBoard.addEventListener(
+        "mouseover",
+        displayShipPlacementHandler
+      );
       activeGameBoard.addEventListener("click", placeShipHandler);
       activeGameBoard.addEventListener("dblclick", removeShipHandler);
-    } else if (activePlayer.allShipsDeployed === true) {
+    } else if (
+      activePlayer.allShipsDeployed === true &&
+      activePlayer.ready === true
+    ) {
       activeGameBoard.classList.add("active");
     }
 
     createGameBoard(playerOneGameBoard, playerOneDomBoard);
     createGameBoard(playerTwoGameBoard, playerTwoDomBoard);
+  }
+
+  static footer(playerOne, playerTwo) {
+    Array.from(footer.childNodes).forEach((child) => child.remove());
+    const activePlayer = playerOne.active ? playerOne : playerTwo;
+
+    if (activePlayer.ready === false) {
+      createAlignmentButtonsAndInstructions(activePlayer.allShipsDeployed);
+    }
   }
 
   static opponentSelection() {

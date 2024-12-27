@@ -116,6 +116,10 @@ div.idle-area {
 
 footer {
     justify-self: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
 }
 
 button {

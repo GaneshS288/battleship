@@ -3,8 +3,8 @@ import { PubSub } from "./pubsub.js";
 
 export class GameController {
   constructor() {
-    this.playerOne = { player: null, active: false, allShipsDeployed: false };
-    this.playerTwo = { player: null, active: false, allShipsDeployed: false };
+    this.playerOne = { player: null, active: false, allShipsDeployed: false, ready : false };
+    this.playerTwo = { player: null, active: false, allShipsDeployed: false, ready : false };
   }
 
   #changeShipDeployedStatus() {
@@ -84,9 +84,21 @@ export class GameController {
 
     if (result) {
       PubSub.publish("gameBoard changed", [this.playerOne, this.playerTwo]);
-      PubSub.publish("idle area changed", [this.playerOne], this.playerTwo);
+      PubSub.publish("idle area changed", [this.playerOne, this.playerTwo]);
     }
     return result;
+  }
+
+  changeActivePlayerShipAlignment(newAlignment) {
+    const activePlayer = this.playerOne.active
+      ? this.playerOne
+      : this.playerTwo;
+
+    activePlayer.player.idleShips.forEach(
+      (ship) => (ship.alignment = newAlignment)
+    );
+
+    PubSub.publish("idle area changed", [this.playerOne, this.playerTwo]);
   }
 
   changeActivePlayer() {
@@ -97,10 +109,12 @@ export class GameController {
       activePlayer = this.playerOne;
     } else if (this.playerOne.active && this.playerOne.allShipsDeployed) {
       this.playerOne.active = false;
+      this.playerOne.ready = true;
       this.playerTwo.active = true;
       activePlayer = this.playerTwo;
     } else if (this.playerTwo.active && this.playerTwo.allShipsDeployed) {
       this.playerTwo.active = false;
+      this.playerTwo.ready = true;
       this.playerOne.active = true;
       activePlayer = this.playerOne;
     }
