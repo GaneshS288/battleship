@@ -114,7 +114,10 @@ export class GameController {
       this.changeActivePlayer();
     } else {
       result = activePlayer.player.attack(coordinates, inactivePlayer.player.gameBoard);
+      this.changeActivePlayer();
     }
+
+    PubSub.publish("attack successful", [activePlayer, inactivePlayer, result]);
 
     return result;
   }
@@ -147,6 +150,10 @@ export class GameController {
       this.playerTwo.ready = true;
       this.playerOne.active = true;
       activePlayer = this.playerOne;
+    }
+
+    if(activePlayer.player.type === "cpu" && activePlayer.allShipsDeployed === false) {
+      this.activePlayerPlacesShip();
     }
 
     PubSub.publish("gameBoard changed", [this.playerOne, this.playerTwo]);

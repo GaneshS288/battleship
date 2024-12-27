@@ -108,6 +108,7 @@ function removeGameboardEventListners(gameBoardArray) {
     gameBoard.removeEventListener("click", placeShipHandler);
     gameBoard.removeEventListener("mouseover", displayShipPlacementHandler);
     gameBoard.removeEventListener("dblclick", removeShipHandler);
+    gameBoard.removeEventListener("click", attackShipHandler);
   });
 }
 
@@ -262,6 +263,17 @@ function removeShipHandler(event) {
   }
 }
 
+function attackShipHandler(event) {
+  if (event.target === event.currentTarget) return null;
+  else if (event.target.classList.contains("untargeted")) {
+    const coordinates = event.target.dataset.coordinates
+      .split(",")
+      .map((coor) => Number(coor));
+
+    PubSub.publish("player attacked", [coordinates]);
+  }
+}
+
 export class Render {
   static startButton() {
     Array.from(footer.childNodes).forEach((child) => child.remove());
@@ -304,6 +316,9 @@ export class Render {
     const activeGameBoard = playerOne.active
       ? playerOneDomBoard
       : playerTwoDomBoard;
+    const inactiveGameboard = playerOne.active
+      ? playerTwoDomBoard
+      : playerOneDomBoard;
     const activePlayer = playerOne.active ? playerOne : playerTwo;
 
     //remove active class and clean gameboard so new cells can be rendered
@@ -326,19 +341,24 @@ export class Render {
       activePlayer.allShipsDeployed === true &&
       activePlayer.ready === true
     ) {
-      activeGameBoard.classList.add("active");
+      inactiveGameboard.addEventListener("click", attackShipHandler);
     }
 
     createGameBoard(playerOneGameBoard, playerOneDomBoard);
     createGameBoard(playerTwoGameBoard, playerTwoDomBoard);
   }
 
-  static footer(playerOne, playerTwo) {
+  static footer(playerOne, playerTwo, result) {
     Array.from(footer.childNodes).forEach((child) => child.remove());
     const activePlayer = playerOne.active ? playerOne : playerTwo;
 
     if (activePlayer.ready === false) {
       createAlignmentButtonsAndInstructions(activePlayer.allShipsDeployed);
+    }
+    else if(result) {
+        let p = createElement("p", ["result"]);
+        p.textContent = `${playerOne.player.name} attacked ${playerTwo.player.name}. It was a ${result}`;
+        footer.append(p);
     }
   }
 
