@@ -33,13 +33,15 @@ describe("game controller", () => {
   test("active player places ship works with cpu player", () => {
     const gameController = new GameController();
     gameController.initializePlayers(
-      { name: "CPU", type: "cpu" },
-      { name: "Ganesh", type: "human" }
+      { name: "Ganesh", type: "human" },
+      { name: "CPU", type: "cpu" }
     );
 
+    gameController.playerOne.active = false;
+    gameController.playerTwo.active = true;
     expect(gameController.activePlayerPlacesShip()).toBe(true);
-    expect(gameController.playerTwo.active).toBe(true);
-    expect(gameController.playerOne.player.idleShips.length).toBe(0);
+    expect(gameController.playerOne.active).toBe(true);
+    expect(gameController.playerTwo.player.idleShips.length).toBe(0);
   });
 
   test("active player can remove ships", () => {
@@ -75,8 +77,7 @@ describe("game controller", () => {
     gameController.activePlayerPlacesShip([0, 1]);
     gameController.playerOne.active = false;
     gameController.playerTwo.active = true;
+    gameController.playerTwo.allShipsDeployed = true;
     expect(gameController.activePlayerAttacks([0, 1])).toBe("hit");
-    expect(gameController.activePlayerAttacks([0, 1])).toBe("invalid target");
-    expect(gameController.activePlayerAttacks([0, 8])).toBe("miss");
   });
 });

@@ -287,6 +287,22 @@ export class Render {
     footer.append(button);
   }
 
+  static playerNames(playerOne, playerTwo) {
+    const playerOneName = playerOne.player.name;
+    const playerTwoName = playerTwo.player.name;
+    const playerNamesDom = document.querySelectorAll("#playerName");
+
+    playerNamesDom[0].textContent = playerOneName;
+    playerNamesDom[1].textContent = playerTwoName;
+
+    playerNamesDom.forEach((element) => element.classList.remove("active"));
+    if (playerOne.active === true) {
+      playerNamesDom[0].classList.add("active");
+    } else {
+      playerNamesDom[1].classList.add("active");
+    }
+  }
+
   static idleAreas(playerOne, playerTwo) {
     const playerOneArea = idleAreas[0];
     const playerTwoArea = idleAreas[1];
@@ -354,19 +370,41 @@ export class Render {
 
     if (activePlayer.ready === false) {
       createAlignmentButtonsAndInstructions(activePlayer.allShipsDeployed);
-    }
-    else if(result) {
-        let p = createElement("p", ["result"]);
-        p.textContent = `${playerOne.player.name} attacked ${playerTwo.player.name}. It was a ${result}`;
-        footer.append(p);
+    } else if (result) {
+      let p = createElement("p", ["result"]);
+      p.textContent = `${playerOne.player.name} attacked ${playerTwo.player.name}. It was a ${result}`;
+      footer.append(p);
     }
   }
 
   static opponentSelection() {
+    const fillNameInstructionsPara = createElement("p", [
+      "fill-name-instructions",
+    ]);
+    const bothLablesInputsContainer = createElement("div", [
+      "input-label-container",
+    ]);
+    const playerOneInputLabelContainer = createElement("div", [
+      "input-label-container",
+    ]);
+    const playerTwoInputLabelContainer = createElement("div", [
+      "input-label-container",
+    ]);
+    const playerOneNameLabel = createElement("label", ["playerOne-name-lable"]);
+    const playerOneNameInput = createElement("input", ["playerOne-name-input"]);
+    const playerTwoNameLabel = createElement("label", ["playerTwo-name-label"]);
+    const playerTwoNameInput = createElement("input", ["playerTwo-name-input"]);
     const choicePara = createElement("p", ["choice-text"]);
     const buttonContainer = createElement("div", ["choice-button-container"]);
     const humanPlayerButton = createElement("button", ["human-player-button"]);
     const cpuPlayerButton = createElement("button", ["cpuPlayerButton"]);
+
+    fillNameInstructionsPara.textContent =
+      "Please input your name below. If you wish to fight a CPU then leave player two as it is.";
+    playerOneNameLabel.textContent = "Player 1 Name :";
+    playerTwoNameLabel.textContent = "player 2 Name :";
+    playerOneNameInput.value = "Player1";
+    playerTwoNameInput.value = "Player2";
 
     choicePara.textContent =
       "Which type of player do you want to face off aganist?";
@@ -375,8 +413,8 @@ export class Render {
 
     humanPlayerButton.addEventListener("click", (e) => {
       PubSub.publish("opponent selected", [
-        { name: "player1", type: "human" },
-        { name: "player2", type: "human" },
+        { name: `${playerOneNameInput.value}`, type: "human" },
+        { name: `${playerTwoNameInput.value}`, type: "human" },
       ]);
       choicePara.remove();
       buttonContainer.remove();
@@ -385,7 +423,7 @@ export class Render {
 
     cpuPlayerButton.addEventListener("click", (e) => {
       PubSub.publish("opponent selected", [
-        { name: "player1", type: "human" },
+        { name: `${playerOneNameInput.value}`, type: "human" },
         { name: "CPU", type: "cpu" },
       ]);
       choicePara.remove();
@@ -393,8 +431,19 @@ export class Render {
       dialog.close();
     });
 
+    playerOneInputLabelContainer.append(playerOneNameLabel, playerOneNameInput);
+    playerTwoInputLabelContainer.append(playerTwoNameLabel, playerTwoNameInput);
+    bothLablesInputsContainer.append(
+      playerOneInputLabelContainer,
+      playerTwoInputLabelContainer
+    );
     buttonContainer.append(humanPlayerButton, cpuPlayerButton);
-    dialog.append(choicePara, buttonContainer);
+    dialog.append(
+      fillNameInstructionsPara,
+      bothLablesInputsContainer,
+      choicePara,
+      buttonContainer
+    );
 
     dialog.showModal();
   }

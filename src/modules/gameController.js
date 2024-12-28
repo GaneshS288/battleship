@@ -156,7 +156,6 @@ export class GameController {
       this.activePlayerPlacesShip();
     }
 
-    PubSub.publish("gameBoard changed", [this.playerOne, this.playerTwo]);
-    PubSub.publish("idle area changed", [this.playerOne, this.playerTwo]);
+    PubSub.publish("player changed", [this.playerOne, this.playerTwo]);
   }
 }

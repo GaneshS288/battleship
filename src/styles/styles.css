@@ -27,6 +27,11 @@ header {
     row-gap: 20px;
 }
 
+/*player names*/
+#playerName.active {
+    text-decoration: underline;
+}
+
 
 /*gameBoard container*/
 .middle > div:nth-child(2) {
