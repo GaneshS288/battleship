@@ -15,6 +15,8 @@ PubSub.subscribe("player changed", Render.idleAreas);
 PubSub.subscribe("gameBoard changed", Render.footer);
 PubSub.subscribe("player changed", Render.footer);
 PubSub.subscribe("attack successful", Render.footer);
+PubSub.subscribe("player defeated", Render.defeatPrompt);
+PubSub.subscribe("start game", Render.startButton);
 
 PubSub.subscribe("opponent selected", gameController.initializePlayers.bind(gameController));
 PubSub.subscribe("ship placed", gameController.activePlayerPlacesShip.bind(gameController));
@@ -23,4 +25,4 @@ PubSub.subscribe("change player", gameController.changeActivePlayer.bind(gameCon
 PubSub.subscribe("alignment changed", gameController.changeActivePlayerShipAlignment.bind(gameController));
 PubSub.subscribe("player attacked", gameController.activePlayerAttacks.bind(gameController));
 
-Render.startButton();
+PubSub.publish("start game");

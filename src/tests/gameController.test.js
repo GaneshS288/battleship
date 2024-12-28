@@ -14,6 +14,22 @@ describe("game controller", () => {
     expect(gameController.playerTwo.player instanceof CpuPlayer).toBe(true);
   });
 
+  test("initialize players resets the playerOne and playerTwo properties", ()=> {
+    const gameController = new GameController();
+    gameController.playerOne.allShipsDeployed = true;
+    gameController.playerTwo.ready = true;
+    gameController.playerTwo.active = true;
+
+    gameController.initializePlayers(
+      { name: "Ganesh", type: "human" },
+      { name: "CPU", type: "cpu" }
+    );
+
+    expect(gameController.playerOne.allShipsDeployed).toBe(false);
+    expect(gameController.playerTwo.ready).toBe(false);
+    expect(gameController.playerTwo.active).toBe(false);
+  })
+
   test("active player places ships", () => {
     const gameController = new GameController();
     gameController.initializePlayers(

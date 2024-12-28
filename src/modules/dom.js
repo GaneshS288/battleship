@@ -72,6 +72,25 @@ function clearAllPlacementId() {
   invalidElements.forEach((element) => element.removeAttribute("id"));
 }
 
+function resetGameDom() {
+  //clear gameboards
+  gameBoardContainers.forEach((gameBoard) => {
+    Array.from(gameBoard.childNodes).forEach((child) => child.remove());
+  });
+
+  //reset player names to generic player 1 and player 2
+  const playerNames = document.querySelectorAll("#playerName");
+  playerNames[0].textContent = "Player1";
+  playerNames[1].textContent = "Player2";
+
+  //clear idle areas
+  idleAreas.forEach((idleArea) => {
+    Array.from(idleArea.childNodes).forEach((child) => child.remove());
+  });
+  //clear footer
+  Array.from(footer.childNodes).forEach((child) => child.remove());
+}
+
 function createElement(elementType, classArray, attributeArray) {
   const element = document.createElement(elementType);
   element.classList.add(...classArray);
@@ -377,6 +396,25 @@ export class Render {
     }
   }
 
+  static defeatPrompt(winnerName, loserName) {
+    const resultPara = createElement("p", ["result"]);
+    const playAgainButton = createElement("button", ["play-again"]);
+
+    resultPara.textContent = `${winnerName} has defeated ${loserName}`;
+    playAgainButton.textContent = "Play Again?";
+
+    playAgainButton.addEventListener("click", () => {
+      resetGameDom();
+      PubSub.publish("start game");
+      dialog.close();
+    });
+
+    Array.from(dialog.childNodes).forEach((child) => child.remove());
+
+    dialog.append(resultPara, playAgainButton);
+    dialog.showModal();
+  }
+
   static opponentSelection() {
     const fillNameInstructionsPara = createElement("p", [
       "fill-name-instructions",
@@ -430,6 +468,9 @@ export class Render {
       buttonContainer.remove();
       dialog.close();
     });
+
+    //clear dialog
+    Array.from(dialog.childNodes).forEach((child) => child.remove());
 
     playerOneInputLabelContainer.append(playerOneNameLabel, playerOneNameInput);
     playerTwoInputLabelContainer.append(playerTwoNameLabel, playerTwoNameInput);

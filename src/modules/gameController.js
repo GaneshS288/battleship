@@ -44,6 +44,15 @@ export class GameController {
       }
     });
 
+    //set false on properties to reset the game
+    this.playerOne.allShipsDeployed = false
+    this.playerOne.ready = false;
+    this.playerOne.active = false;
+    this.playerTwo.allShipsDeployed = false;
+    this.playerTwo.ready = false;
+    this.playerTwo.active = false;
+
+    //assign players after populating their ships
     players[0].createShips();
     players[1].createShips();
     this.playerOne.player = players[0];
@@ -113,13 +122,31 @@ export class GameController {
       result = activePlayer.player.attack(inactivePlayer.player.gameBoard);
       this.changeActivePlayer();
     } else {
-      result = activePlayer.player.attack(coordinates, inactivePlayer.player.gameBoard);
+      result = activePlayer.player.attack(
+        coordinates,
+        inactivePlayer.player.gameBoard
+      );
       this.changeActivePlayer();
     }
+
+    //check if the last shot defeated player so you can skip turn and show defeat prompt
+    this.#inactivePlayerReportsDefeat(activePlayer, inactivePlayer);
 
     PubSub.publish("attack successful", [activePlayer, inactivePlayer, result]);
 
     return result;
+  }
+
+  #inactivePlayerReportsDefeat(activePlayer, inactivePlayer) {
+    const inactivePlayerDefeated = inactivePlayer.player.isDefeated();
+
+    if (inactivePlayerDefeated) {
+      PubSub.publish("player defeated", [
+        activePlayer.player.name,
+        inactivePlayer.player.name,
+      ]);
+      return true;
+    } else return false;
   }
 
   changeActivePlayerShipAlignment(newAlignment) {
@@ -152,7 +179,10 @@ export class GameController {
       activePlayer = this.playerOne;
     }
 
-    if(activePlayer.player.type === "cpu" && activePlayer.allShipsDeployed === false) {
+    if (
+      activePlayer.player.type === "cpu" &&
+      activePlayer.allShipsDeployed === false
+    ) {
       this.activePlayerPlacesShip();
     }
 
